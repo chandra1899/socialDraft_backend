@@ -1,6 +1,10 @@
 const User=require('../models/user')
+const bcrypt=require('bcrypt')
+const jwt=require('jsonwebtoken')
+
 
 module.exports.create=async (req,res)=>{
+    console.log(req.body);
     if(req.body.password!=req.body.confirm_password){
         return res.status(400).json({error:"password and confirm_password does not match"})
     }
@@ -19,13 +23,44 @@ module.exports.create=async (req,res)=>{
     }
 }
 
-module.exports.signIn=(req,res)=>{
-    if(!req.isAuthenticated()){
-        return res.status(401).json({msg:"unable to Authenticated"})
+module.exports.signIn=async (req,res)=>{
+    // if(!req.isAuthenticated()){
+    //     return res.status(401).json({msg:"unable to Authenticated"})
+    // }
+    try {
+        console.log(req.body);
+        const {email,password}=req.body;
+    if(!email || !password){
+        return res.status(404).json({msg:"please fill the data"});
+    }
+
+    let userlogin=await User.findOne({email:email});
+    // console.log(userlogin);
+    if(userlogin){
+        let match=await bcrypt.compare(password,userlogin.password);
+        console.log(match);
+        if(match){
+            const tok=await userlogin.generateAuthToken();
+            console.log(tok);
+            res.cookie("jwttoken",tok,{
+                expires:new Date(Date.now()+2589200000),
+                httpOnly:true
+            });
+            return res.status(200).json({msg:"successfully signIn"})
+        }else{
+            return res.status(404).json({msg:"invalid username/password"})
+        }
+    }else{
+        return res.status(404).json({msg:"please signUp"})
+    }
+    
+    } catch (err) {
+        return res.status(400).json({msg:"error in signIn",error:err})
     }
 }
 
 module.exports.createSession=(req,res)=>{
+    console.log(req.user);
     return res.status(200).json({msg:"sucessfully created session"})
 }
 
@@ -34,6 +69,24 @@ module.exports.destroySession=(req,res)=>{
         if(err){
             return next(err);
         }
+        console.log(req.user);
         return res.status(200).json({msg:"successfully signed out"})
     });
+}
+module.exports.getuser=async (req,res)=>{
+    // console.log(req.rootUser);
+    try {
+        let user=await req.rootUser;
+        if(user){
+            // console.log(user);
+            return await res.status(200).json({user})
+        }
+        else {
+            return res.status(404).json({msg:"no user"})
+        }
+    } catch (err) {
+        // console.log(err);
+        return res.status(404).json({msg:"error in getting user",error:err})
+    }
+    
 }

@@ -1,7 +1,8 @@
 require('dotenv').config();
 console.log(process.env.PORT);
 const express = require('express');
-const cors = require('cors');
+const cookieParser=require('cookie-parser');
+
 const app = express();
 const db = require('./config/mongoose');
 const PORT=8000;
@@ -11,9 +12,22 @@ const passportLocal=require('./config/passport-local-strategy');
 const passportJWT=require('./config/passport-jwt-strategy');
 const MongoStore = require('connect-mongo');
 
-app.use(express.urlencoded());
+const bodyParser = require('body-parser');
 
-app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+const cors=require("cors");
+app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    })
+  );
+
+app.use(express.urlencoded());
+app.use(cookieParser());
+
 app.use(session({
     name:'SocialMedia',
     secret:"something",

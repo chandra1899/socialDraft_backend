@@ -1,5 +1,6 @@
-const Post=require('../models/posts');
+const Post=require('../models/post');
 const Comment=require('../models/comment');
+const User=require('../models/user')
 
 module.exports.create=async (req,res)=>{
     try {
@@ -7,6 +8,9 @@ module.exports.create=async (req,res)=>{
             content:req.body.content,
             user:req.user._id
         });
+        let user=await User.findById(req.user._id);
+        user.posts.push(post._id);
+        user.save();
         return res.status(200).json({msg:"post created successfully"})
     } catch (error) {
         return res.status(404).json({error:error})
@@ -20,6 +24,9 @@ module.exports.destroy=async (req,res)=>{
             // post.remove();
             await Comment.deleteMany({post:req.params.id});
             await Post.findByIdAndDelete(post.id);
+            let user=await User.findById(req.user._id);
+            user.posts.pull(post._id);
+            user.save();
 
             return res.status(200).json({msg:"sucessfully deleted post"})
         }else{
