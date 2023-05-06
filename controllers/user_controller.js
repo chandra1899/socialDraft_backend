@@ -76,10 +76,10 @@ module.exports.destroySession=(req,res)=>{
 module.exports.getuser=async (req,res)=>{
     // console.log(req.rootUser);
     try {
-        let user=await req.rootUser;
-        if(user){
+        let can=await req.rootUser;
+        if(can){
             // console.log(user);
-            return await res.status(200).json({user})
+            return await res.status(200).json({can})
         }
         else {
             return res.status(404).json({msg:"no user"})
