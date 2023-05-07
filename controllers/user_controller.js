@@ -78,7 +78,7 @@ module.exports.getuser=async (req,res)=>{
     try {
         let can=await req.rootUser;
         if(can){
-            // console.log(user);
+            // console.log(can);
             return await res.status(200).json({can})
         }
         else {

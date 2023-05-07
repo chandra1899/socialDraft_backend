@@ -1,10 +1,8 @@
 const express=require('express');
 const router=express.Router();
-
-router.get('/',(req,res)=>{
-    res.status(200).json({msg:"SoacialMedia API"})
-})
+const homeController=require('../controllers/home_controller')
 
 router.use('/api',require('./api'));
+router.use('/',homeController.home)
 
 module.exports=router;
