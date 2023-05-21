@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const passport=require('passport');
+const Authenticate=require('../../middlewares/auth')
 const bookmarkController=require('../../controllers/bookmark_controller')
 
-router.post('/',passport.checkAuthenticatoion,bookmarkController.toggleBookmark);
+router.post('/',Authenticate,bookmarkController.toggleBookmark);
 
 
 module.exports = router;

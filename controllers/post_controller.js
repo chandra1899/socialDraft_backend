@@ -37,3 +37,14 @@ module.exports.destroy=async (req,res)=>{
         return res.status(404).json({error:error})
     }
 }
+
+module.exports.yourposts=async (req,res)=>{
+    try {
+        let user=await req.rootUser.populate('posts');
+    let yourposts=await user.posts.reverse();
+    // console.log(yourposts);
+    return res.status(200).json({yourposts});
+    } catch (err) {
+    return res.status(404).json({err});   
+    }
+}

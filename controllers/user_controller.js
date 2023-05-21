@@ -42,10 +42,12 @@ module.exports.signIn=async (req,res)=>{
         if(match){
             const tok=await userlogin.generateAuthToken();
             console.log(tok);
-            res.cookie("jwttoken",tok,{
+            await res.cookie("jwttoken",tok,{
                 expires:new Date(Date.now()+2589200000),
                 httpOnly:true
             });
+            console.log(tok);
+
             return res.status(200).json({msg:"successfully signIn"})
         }else{
             return res.status(404).json({msg:"invalid username/password"})
@@ -87,6 +89,5 @@ module.exports.getuser=async (req,res)=>{
     } catch (err) {
         // console.log(err);
         return res.status(404).json({msg:"error in getting user",error:err})
-    }
-    
+    }  
 }

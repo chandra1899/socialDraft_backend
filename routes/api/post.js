@@ -6,6 +6,7 @@ const Authenticate=require('../../middlewares/auth')
 
 
 router.post('/create',Authenticate,postsController.create);
+router.get('/yourposts',Authenticate,postsController.yourposts);
 router.get('/destroy/:id',passport.checkAuthenticatoion,postsController.destroy);
 
 module.exports=router;

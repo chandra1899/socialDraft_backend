@@ -1,8 +1,9 @@
 const express=require('express');
 const router=express.Router();
 const likeController=require('../../controllers/like_controller')
-const passport=require('passport')
+const Authenticate=require('../../middlewares/auth')
 
-router.post('/',passport.checkAuthenticatoion,likeController.toggleLike)
+
+router.post('/',Authenticate,likeController.toggleLike)
 
 module.exports=router;

@@ -4,7 +4,7 @@ const Post=require('../models/post');
 
 module.exports.toggleLike=async (req,res)=>{
     try {
-        console.log(req.query.id,req.query.type);
+        // console.log(req.query.id,req.query.type,req.userID);
         let likable;
         let deleted=false;
         if(req.query.type=='Post'){
@@ -15,9 +15,9 @@ module.exports.toggleLike=async (req,res)=>{
         let existingLike=await Like.findOne({
             likable:req.query.id,
             onModel:req.query.type,
-            user:req.user._id
+            user:req.userID
         });
-        console.log(likable,existingLike);
+        // console.log(existingLike);
         if(existingLike){
             likable.likes.pull(existingLike._id);
             likable.save();
@@ -25,12 +25,12 @@ module.exports.toggleLike=async (req,res)=>{
            await  Like.findOneAndRemove({
                 likable:req.query.id,
             onModel:req.query.type,
-            user:req.user._id
+            user:req.userID
             })
             deleted=true;
         }else{
             let newLike=await Like.create({
-                user:req.user._id,
+                user:req.userID,
                 likable:req.query.id,
                 onModel:req.query.type
             });
