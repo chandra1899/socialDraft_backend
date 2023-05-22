@@ -1,6 +1,7 @@
 const Like=require('../models/like')
 const Bookmark=require('../models/bookmark')
 const Post=require('../models/post')
+const Comment=require('../models/comment')
 
 
 module.exports.isliked=async (req,res)=>{
@@ -14,8 +15,15 @@ module.exports.isliked=async (req,res)=>{
         if(like) {
             likeexist=true
         }
+        let likes
+       if(req.query.type=='Post')
+       {
         let post=await Post.findById(req.query.id)
-        let likes=post.likes.length
+        likes=post.likes.length
+       }else{
+        let comment=await Comment.findById(req.query.id)
+        likes=comment.likes.length
+       }
         // console.log(likes);
         // console.log(user);
         return res.status(200).json({likeexist,likes})

@@ -1,6 +1,7 @@
 const Post=require('../models/post');
 const Comment=require('../models/comment');
 const User=require('../models/user')
+const Bookmark=require('../models/bookmark')
 
 module.exports.create=async (req,res)=>{
     try {
@@ -46,5 +47,36 @@ module.exports.yourposts=async (req,res)=>{
     return res.status(200).json({yourposts});
     } catch (err) {
     return res.status(404).json({err});   
+    }
+}
+
+module.exports.getpost=async (req,res)=>{
+    try {
+        let post=await Post.findById(req.params.id).populate('user').populate({
+        path:'comments',
+        populate:{
+            path:'user'
+        }});
+    // console.log(post);
+    return res.status(200).json({post})
+
+    } catch (err) {
+    return res.status(404).json({err})
+        
+    }
+}
+
+module.exports.savedposts=async (req,res)=>{
+    try {
+    let savedposts=await Bookmark.find({user:req.userID}).populate({
+        path:'bookmark',
+        populate:{
+            path:'user'
+        }})
+    // console.log(savedposts);
+    return res.status(200).json({savedposts})
+
+    } catch (err) {
+    return res.status(404).json({err})
     }
 }

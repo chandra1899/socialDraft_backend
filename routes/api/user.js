@@ -20,6 +20,7 @@ router.post('/destroy/:id',async (req,res)=>{
     }
 })
 router.post('/sign-in', userController.signIn);
+router.post('/update',authenticate,userController.update);
 router.post('/create-session',(req,res,next)=>{
     req.body.email=req.body.Email;
     req.body.password=req.body.Password;
@@ -28,6 +29,7 @@ router.post('/create-session',(req,res,next)=>{
     passport.authenticate('local', { failureRedirect: '/user/sign-in' },), userController.createSession);
 router.get('/sign-out', userController.destroySession);
 router.get('/getuser',authenticate, userController.getuser);
+router.get('/userdetails/:id', userController.userdetails);
 
 
 module.exports = router;

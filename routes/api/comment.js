@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const passport=require('passport');
+const Authenticate=require('../../middlewares/auth')
 const commentsController=require('../../controllers/comment_controller')
 
-router.post('/create',passport.checkAuthenticatoion,commentsController.create);
-router.get('/destroy/:id',passport.checkAuthenticatoion,commentsController.destroy);
+router.post('/create',Authenticate,commentsController.create);
+router.get('/destroy/:id',commentsController.destroy);
 
 module.exports = router;

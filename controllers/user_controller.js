@@ -3,6 +3,20 @@ const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 
 
+module.exports.update=async (req,res)=>{
+    try {
+        // console.log(req.body);
+    let user=await User.findById(req.userID)
+        user.name=req.body.name
+        user.description=req.body.description
+        await user.save()
+        // console.log(user);
+        return res.status(200).json({user})
+    } catch (err) {
+        return res.status(404).json({err})
+    }    
+}
+
 module.exports.create=async (req,res)=>{
     console.log(req.body);
     if(req.body.password!=req.body.confirm_password){
@@ -90,4 +104,18 @@ module.exports.getuser=async (req,res)=>{
         // console.log(err);
         return res.status(404).json({msg:"error in getting user",error:err})
     }  
+}
+
+module.exports.userdetails=async (req,res)=>{
+    try {
+        let user=await User.findById(req.params.id).populate({
+            path:'posts',
+            populate:{
+                path:'user'
+            }});
+            let posts=await user.posts
+            return res.status(200).json({user,posts})
+    } catch (err) {
+        return res.status(500).json({err})
+    }
 }
