@@ -14,7 +14,7 @@ module.exports.create=async (req,res)=>{
         user.save();
         return res.status(200).json({msg:"post created successfully"})
     } catch (error) {
-        return res.status(404).json({error:error})
+        return res.status(500).json({error:error})
   }
 }
 

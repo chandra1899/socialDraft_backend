@@ -112,7 +112,7 @@ module.exports.userdetails=async (req,res)=>{
             path:'posts',
             populate:{
                 path:'user'
-            }});
+            }}).populate('followers');
             let posts=await user.posts
             return res.status(200).json({user,posts})
     } catch (err) {
