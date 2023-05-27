@@ -18,7 +18,7 @@ module.exports.update=async (req,res)=>{
 }
 
 module.exports.create=async (req,res)=>{
-    console.log(req.body);
+    // console.log(req.body);
     if(req.body.password!=req.body.confirm_password){
         return res.status(400).json({error:"password and confirm_password does not match"})
     }
@@ -42,7 +42,7 @@ module.exports.signIn=async (req,res)=>{
     //     return res.status(401).json({msg:"unable to Authenticated"})
     // }
     try {
-        console.log(req.body);
+        // console.log(req.body);
         const {email,password}=req.body;
     if(!email || !password){
         return res.status(404).json({msg:"please fill the data"});
@@ -52,15 +52,15 @@ module.exports.signIn=async (req,res)=>{
     // console.log(userlogin);
     if(userlogin){
         let match=await bcrypt.compare(password,userlogin.password);
-        console.log(match);
+        // console.log(match);
         if(match){
             const tok=await userlogin.generateAuthToken();
-            console.log(tok);
+            // console.log(tok);
             await res.cookie("jwttoken",tok,{
                 expires:new Date(Date.now()+2589200000),
                 httpOnly:true
             });
-            console.log(tok);
+            // console.log(tok);
 
             return res.status(200).json({msg:"successfully signIn"})
         }else{
@@ -76,7 +76,7 @@ module.exports.signIn=async (req,res)=>{
 }
 
 module.exports.createSession=(req,res)=>{
-    console.log(req.user);
+    // console.log(req.user);
     return res.status(200).json({msg:"sucessfully created session"})
 }
 
@@ -85,7 +85,7 @@ module.exports.destroySession=(req,res)=>{
         if(err){
             return next(err);
         }
-        console.log(req.user);
+        // console.log(req.user);
         return res.status(200).json({msg:"successfully signed out"})
     });
 }
