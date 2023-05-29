@@ -6,10 +6,10 @@ module.exports.togglefollow=async (req,res)=>{
         // console.log(req.user);
         let deleted=false;
     let father=await User.findById(req.query.id)
-    let son=await User.findById(req.userID)
+    let son=await User.findById(req.user._id)
     // console.log(father,son);
         let existingFollow=await Follow.findOne({
-            user:req.userID,
+            user:req.user._id,
             followable:req.query.id
         })
         // console.log(existingFollow);
@@ -19,7 +19,7 @@ module.exports.togglefollow=async (req,res)=>{
             father.followers.pull(existingFollow._id)
             father.save();
             await Follow.findOneAndDelete({
-                user:req.userID,
+            user:req.user._id,
             followable:father._id
             })
             deleted=true
@@ -27,7 +27,7 @@ module.exports.togglefollow=async (req,res)=>{
            
         }else{
             let newfollow=await Follow.create({
-            user:req.userID,
+            user:req.user._id,
             followable:father._id
             })
             son.following.push(newfollow._id)
@@ -45,7 +45,7 @@ module.exports.togglefollow=async (req,res)=>{
 
 module.exports.yourfollowing=async (req,res)=>{
     try {
-        let user=await User.findById(req.userID).populate({
+        let user=await User.findById(req.user._id).populate({
             path:'following',
             populate:{
                 path:'followable'

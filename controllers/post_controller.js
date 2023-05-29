@@ -7,9 +7,9 @@ module.exports.create=async (req,res)=>{
     try {
         let post=await Post.create({
             content:req.body.content,
-            user:req.userID
+            user:req.user._id
         });
-        let user=await User.findById(req.userID);
+        let user=await User.findById(req.user._id);
         user.posts.push(post._id);
         user.save();
         return res.status(200).json({msg:"post created successfully"})
@@ -41,7 +41,7 @@ module.exports.destroy=async (req,res)=>{
 
 module.exports.yourposts=async (req,res)=>{
     try {
-        let user=await req.rootUser.populate('posts');
+    let user=await req.user.populate('posts');
     let yourposts=await user.posts.reverse();
     // console.log(yourposts);
     return res.status(200).json({yourposts});
@@ -68,7 +68,7 @@ module.exports.getpost=async (req,res)=>{
 
 module.exports.savedposts=async (req,res)=>{
     try {
-    let savedposts=await Bookmark.find({user:req.userID}).populate({
+    let savedposts=await Bookmark.find({user:req.user._id}).populate({
         path:'bookmark',
         populate:{
             path:'user'

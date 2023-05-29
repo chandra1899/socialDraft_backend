@@ -2,13 +2,13 @@ const express=require('express');
 const router=express.Router();
 const postsController=require('../../controllers/post_controller')
 // const passport=require('passport')
-const Authenticate=require('../../middlewares/auth')
+// const Authenticate=require('../../middlewares/auth')
+const passport=require('passport')
 
-
-router.post('/create',Authenticate,postsController.create);
-router.get('/yourposts',Authenticate,postsController.yourposts);
+router.post('/create',passport.checkAuthentication,postsController.create);
+router.get('/yourposts',passport.checkAuthentication,postsController.yourposts);
 router.get('/getpost/:id',postsController.getpost);
-router.get('/savedposts',Authenticate,postsController.savedposts);
+router.get('/savedposts',passport.checkAuthentication,postsController.savedposts);
 // router.get('/destroy/:id',passport.checkAuthenticatoion,postsController.destroy);
 
 module.exports=router;

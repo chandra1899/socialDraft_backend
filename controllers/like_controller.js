@@ -15,7 +15,7 @@ module.exports.toggleLike=async (req,res)=>{
         let existingLike=await Like.findOne({
             likable:req.query.id,
             onModel:req.query.type,
-            user:req.userID
+            user:req.user._id
         });
         // console.log(existingLike);
         if(existingLike){
@@ -25,12 +25,12 @@ module.exports.toggleLike=async (req,res)=>{
            await  Like.findOneAndRemove({
                 likable:req.query.id,
             onModel:req.query.type,
-            user:req.userID
+            user:req.user._id
             })
             deleted=true;
         }else{
             let newLike=await Like.create({
-                user:req.userID,
+                user:req.user._id,
                 likable:req.query.id,
                 onModel:req.query.type
             });

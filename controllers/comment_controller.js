@@ -9,7 +9,7 @@ module.exports.create=async (req,res)=>{
          let comment=await Comment.create({
              content:req.body.content,
              post:req.body.post,
-             user:req.userID
+             user:req.user._id
          });
          post.comments.push(comment);
          post.save();

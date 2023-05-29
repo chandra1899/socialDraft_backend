@@ -20,7 +20,7 @@ module.exports.update=async (req,res)=>{
 module.exports.create=async (req,res)=>{
     // console.log(req.body);
     if(req.body.password!=req.body.confirm_password){
-        return res.status(400).json({error:"password and confirm_password does not match"})
+        return res.status(401).json({error:"password and confirm_password does not match"})
     }
     try {
         let user=await User.findOne({email:req.body.email});
@@ -33,7 +33,7 @@ module.exports.create=async (req,res)=>{
         }
     } catch (err) {
         console.log("error in creating user in database",err);
-        return res.status(404).json({error:err}) ;
+        return res.status(500).json({error:err}) ;
     }
 }
 
@@ -43,6 +43,7 @@ module.exports.signIn=async (req,res)=>{
     // }
     try {
         // console.log(req.body);
+        // console.log('under signIn');
         const {email,password}=req.body;
     if(!email || !password){
         return res.status(404).json({msg:"please fill the data"});
@@ -55,12 +56,10 @@ module.exports.signIn=async (req,res)=>{
         // console.log(match);
         if(match){
             const tok=await userlogin.generateAuthToken();
-            // console.log(tok);
-            await res.cookie("jwttoken",tok,{
-                expires:new Date(Date.now()+2589200000),
-                httpOnly:true
-            });
-            // console.log(tok);
+            console.log(tok);
+            await res.cookie("jwttoken",tok);
+            console.log(req.cookies);
+            console.log(tok);
 
             return res.status(200).json({msg:"successfully signIn"})
         }else{
@@ -77,7 +76,15 @@ module.exports.signIn=async (req,res)=>{
 
 module.exports.createSession=(req,res)=>{
     // console.log(req.user);
+    console.log('sucesfully logged in');
+    // if(myerr){
+    //     console.log(myerr);
+    // return res.status(500).json({msg:"sucessfully created session"})
+
+    // }
     return res.status(200).json({msg:"sucessfully created session"})
+
+    // return res.redirect('/');
 }
 
 module.exports.destroySession=(req,res)=>{
@@ -92,9 +99,10 @@ module.exports.destroySession=(req,res)=>{
 module.exports.getuser=async (req,res)=>{
     // console.log(req.rootUser);
     try {
-        let can=await req.rootUser;
-        if(can){
+        // let can=await req.rootUser;
+        if(req.user){
             // console.log(can);
+            let can=req.user;
             return await res.status(200).json({can})
         }
         else {

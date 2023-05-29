@@ -12,7 +12,7 @@ module.exports.isliked=async (req,res)=>{
         let like=await Like.findOne({
             likable:req.query.id,
             onModel:req.query.type,
-            user:req.userID
+            user:req.user._id
         })
         if(like) {
             likeexist=true
@@ -40,7 +40,7 @@ module.exports.issaved=async (req,res)=>{
         let bookmarkexist=false;
         let bookmark=await Bookmark.findOne({
             bookmark:req.query.id,
-            user:req.userID
+            user:req.user._id
         })
         if(bookmark) {
             bookmarkexist=true
@@ -57,7 +57,7 @@ module.exports.isfollow=async (req,res)=>{
         let followexist=false;
         console.log(req.query.id);
         let follow=await Follow.findOne({
-            user:req.userID,
+            user:req.user._id,
             followable:req.query.id
         })
         if(follow) {

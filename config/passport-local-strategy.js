@@ -1,6 +1,7 @@
 const passport=require('passport');
 const LocalStrategy=require('passport-local').Strategy;
 const User=require('../models/user');
+const bcrypt=require('bcrypt')
 
 passport.use(new LocalStrategy({
     usernameField:'email',
@@ -9,9 +10,12 @@ passport.use(new LocalStrategy({
         //find a user and estblish identity
         try {
             let user=await User.findOne({email:email});
-                   
-            if(!user || user.password!=password){
+                //    console.log('in statergy');
+                   let match=await bcrypt.compare(password,user.password);
+                //    console.log(match);
+            if(!user || !match){
                 // console.log('Invalid username/password');
+                // return res.status(401)
                 console.log('error','Invalid Username/Password');
                 return done(null,false)
             }
@@ -39,10 +43,14 @@ passport.deserializeUser(async (id,done)=>{
     }
 });
 
-passport.checkAuthenticatoion=(req,res,next)=>{
+passport.checkAuthentication=(req,res,next)=>{
+    // console.log('up auth');
+    // console.log(req.session);
     if(req.isAuthenticated()){
+    // console.log('yes auth');
         return next();
     }
+    // console.log('not auth');
     return res.status(401).json({msg:"not authenticated"})
 }
 
@@ -50,6 +58,8 @@ passport.setAuthenticatedUser=(req,res,next)=>{
     if(req.isAuthenticated()){
         res.locals.user=req.user;
     }
-    // console.log(res,res.user);
+    // console.log('im in setauth');
     next();
 }
+
+module.exports=passport;
