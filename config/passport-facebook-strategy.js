@@ -9,10 +9,11 @@ const User=require('../models/user');
 const gStrategy=new FacebookStrategy({
     clientID: '1068326004554053',
     clientSecret: 'efc07c87dd27c35d5acee7008efc1b19',
-    callbackURL: "http://localhost:8000/api/user/auth/facebook/callback"
+    callbackURL: "http://localhost:8000/api/user/auth/facebook/callback",
+    profileFields: ['id', 'displayName', 'photos', 'email']
   },
   function(accessToken, refreshToken, profile, cb) {
-    console.log(profile);
+    console.log(profile.emails);
   }
 );
 

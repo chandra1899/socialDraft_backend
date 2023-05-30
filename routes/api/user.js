@@ -20,7 +20,7 @@ router.post('/destroy/:id',async (req,res)=>{
     }
 })
 router.post('/sign-in',userController.signIn);
-router.post('/update',authenticate,userController.update);
+router.post('/update',passport.checkAuthentication,userController.update);
 router.post('/create-session',(req,res,next)=>{
     // console.log('hello');
     passport.authenticate('local',async (err,user,info)=>{
@@ -47,7 +47,7 @@ router.get('/auth/google',passport.authenticate('google',{scope:['profile','emai
 router.get('/auth/google/callback',passport.authenticate('google',{successRedirect:'http://localhost:5173/',failureRedirect:'/users/sign-in'}),userController.createSession);
 
 //facebook
-router.get('/auth/facebook',passport.authenticate('facebook',{scope:['profile','email']}));
+router.get('/auth/facebook',passport.authenticate('facebook',{ scope :'email' }));
 
 router.get('/auth/facebook/callback',
   passport.authenticate('facebook', {successRedirect:'http://localhost:5173/',failureRedirect:'/users/sign-in'}));

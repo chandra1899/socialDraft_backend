@@ -1,6 +1,9 @@
 const mongoose=require('mongoose')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
+const multer=require(('multer'));
+const path=require('path');
+const AVATAR_PATH=path.join('/frontend/src/assets/uploads/users/avatar');
 
 const userSchema=new mongoose.Schema({
     email:{
@@ -32,15 +35,10 @@ const userSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Post'
     }],
-    tokens:[
-        {
-            token:{
-                type:String,
-                required:true
-            }
-        }
-    ],
     description:{
+        type:String
+    },
+    avatar:{
         type:String
     }
 },{
@@ -66,6 +64,21 @@ userSchema.methods.generateAuthToken=async function(){
         console.log(err);
     }
 }
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.join(__dirname,'..','..',AVATAR_PATH))
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.fieldname + '-' + uniqueSuffix)
+    }
+  })
+  
+//   const upload = multer({ storage: storage })
+//statics
+userSchema.statics.uploadedAvatar=multer({ storage: storage }).single('avatar'); 
+userSchema.statics.avatarPath=AVATAR_PATH; 
 
 const User=mongoose.model('User',userSchema);
 

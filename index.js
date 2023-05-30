@@ -2,7 +2,7 @@ require('dotenv').config();
 console.log(process.env.PORT);
 const express = require('express');
 const cookieParser=require('cookie-parser');
-
+const path=require('path')
 const app = express();
 const db = require('./config/mongoose');
 const PORT=8000;
@@ -15,7 +15,7 @@ const MongoStore = require('connect-mongo');
 
 const bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const cors=require("cors");
@@ -28,6 +28,8 @@ app.use(
 
 app.use(express.urlencoded());
 app.use(cookieParser());
+
+app.use('/photo',express.static(path.join(__dirname,'..')));
 
 app.use(session({
     name:'SocialMedia',

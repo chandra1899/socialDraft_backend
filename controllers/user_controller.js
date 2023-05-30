@@ -1,19 +1,44 @@
 const User=require('../models/user')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
+const fs=require('fs');
+const path=require('path');
 
 
 module.exports.update=async (req,res)=>{
     try {
         // console.log(req.body);
-    let user=await User.findById(req.userID)
-        user.name=req.body.name
-        user.description=req.body.description
-        await user.save()
-        // console.log(user);
-        return res.status(200).json({user})
+    // let user=await User.findById(req.user._id)
+        // user.name=req.body.name
+        // user.description=req.body.description
+    //     await user.save()
+    //     // console.log(user);
+    //     return res.status(200).json({user})
+    // console.log(req.file);
+
+    let user=await User.findById(req.user._id);
+    User.uploadedAvatar(req,res,(err)=>{
+     if(err){
+         console.log('***** multer error',err);
+         console.log(req.file);
+         console.log("error",err);
+        return res.status(500).json({err})
+         
+     }
+    //  console.log(req.file);
+     user.name=req.body.name
+     user.description=req.body.description
+     if(req.file){
+        //  if(user.avatar){
+        //      fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
+        //  }
+         user.avatar=User.avatarPath+'/'+req.file.filename
+     }
+     user.save();
+     return res.status(200).json({user})
+    })
     } catch (err) {
-        return res.status(404).json({err})
+        return res.status(500).json({err})
     }    
 }
 
