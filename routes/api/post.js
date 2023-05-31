@@ -6,6 +6,7 @@ const postsController=require('../../controllers/post_controller')
 const passport=require('passport')
 
 router.post('/create',passport.checkAuthentication,postsController.create);
+router.get('/delete/:id',passport.checkAuthentication,postsController.destroy);
 router.get('/yourposts',passport.checkAuthentication,postsController.yourposts);
 router.get('/getpost/:id',postsController.getpost);
 router.get('/savedposts',passport.checkAuthentication,postsController.savedposts);

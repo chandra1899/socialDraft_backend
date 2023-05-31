@@ -2,6 +2,7 @@ const Post=require('../models/post');
 const Comment=require('../models/comment');
 const User=require('../models/user')
 const Bookmark=require('../models/bookmark')
+const Like=require('../models/like')
 
 module.exports.create=async (req,res)=>{
     try {
@@ -20,22 +21,29 @@ module.exports.create=async (req,res)=>{
 
 module.exports.destroy=async (req,res)=>{
     try {
-        let post=await Post.findById(req.params.id);
-        if(post.user==req.user.id){
-            // post.remove();
+        // console.log(req.params.id);
+        let post=await Post.findById(req.params.id).populate('user').populate('comments');
+        // console.log(popst.user);
+        // console.log(req.user._id);
+        // console.log(post);
+        let comments=await post.comments
+        if(post.user.id==req.user._id){
+            console.log('in delete');
+            await Like.deleteMany({likable:post._id,onModel:'Post'});
+            for(comment of comments){
+                await Like.deleteMany({_id:{$in:comment.likes}});
+            }
             await Comment.deleteMany({post:req.params.id});
-            await Post.findByIdAndDelete(post.id);
-            let user=await User.findById(req.user._id);
-            user.posts.pull(post._id);
-            user.save();
-
-            return res.status(200).json({msg:"sucessfully deleted post"})
+            await Bookmark.deleteMany({bookmark:req.params.id});
+            await Post.findByIdAndDelete(post._id);
+            return res.status(200).json({msg:"sucessfully deleted post"});
         }else{
             return res.status(402).json({msg:"can't delete post"})
         }
 
     } catch (error) {
-        return res.status(404).json({error:error})
+        console.log(error);
+        return res.status(500).json({error:error})
     }
 }
 
