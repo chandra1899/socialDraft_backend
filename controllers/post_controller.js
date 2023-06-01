@@ -3,6 +3,8 @@ const Comment=require('../models/comment');
 const User=require('../models/user')
 const Bookmark=require('../models/bookmark')
 const Like=require('../models/like')
+const fs=require('fs');
+const path=require('path');
 
 module.exports.create=async (req,res)=>{
     try {
@@ -23,7 +25,7 @@ module.exports.create=async (req,res)=>{
             user.posts.push(post)
             // user.name=req.body.name
             // user.description=req.body.description
-            if(req.files){
+            if(req.files.postPhoto){
                 // if(user.avatar){
                 //     fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
                 // }
@@ -66,7 +68,11 @@ module.exports.destroy=async (req,res)=>{
             await Comment.deleteMany({post:req.params.id});
             await User.findByIdAndUpdate(post.user._id,{$pull:{posts:req.params.id}});
             await Bookmark.deleteMany({bookmark:req.params.id});
+            if(post.photo){
+                fs.unlinkSync(path.join(__dirname,'..','..',post.photo));
+            }
             await Post.findByIdAndDelete(post._id);
+            
             return res.status(200).json({msg:"sucessfully deleted post"});
         }else{
             return res.status(402).json({msg:"can't delete post"})
