@@ -4,6 +4,7 @@ const jwt=require('jsonwebtoken')
 const multer=require(('multer'));
 const path=require('path');
 const AVATAR_PATH=path.join('/frontend/src/assets/uploads/users/avatar');
+const POST_PATH=path.join('/frontend/src/assets/uploads/users/posts');
 
 const userSchema=new mongoose.Schema({
     email:{
@@ -67,7 +68,11 @@ userSchema.methods.generateAuthToken=async function(){
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        // console.log(file.fieldname,file);
+        if(file.fieldname=='avatar')
       cb(null, path.join(__dirname,'..','..',AVATAR_PATH))
+      else 
+      cb(null, path.join(__dirname,'..','..',POST_PATH))
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
@@ -77,8 +82,12 @@ const storage = multer.diskStorage({
   
 //   const upload = multer({ storage: storage })
 //statics
-userSchema.statics.uploadedAvatar=multer({ storage: storage }).single('avatar'); 
+userSchema.statics.uploadedAvatar=multer({ storage: storage }).fields([
+    { name: 'avatar', maxCount: 1 },
+    { name: 'postPhoto', maxCount: 1 }
+  ]);
 userSchema.statics.avatarPath=AVATAR_PATH; 
+userSchema.statics.userPostPath=POST_PATH; 
 
 const User=mongoose.model('User',userSchema);
 

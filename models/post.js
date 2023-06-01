@@ -21,7 +21,10 @@ const postSchema=new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:'Like'
         }
-    ]
+    ],
+    photo:{
+        type:String
+    }
 },{
     timestamps:true
 });

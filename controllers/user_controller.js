@@ -25,14 +25,14 @@ module.exports.update=async (req,res)=>{
         return res.status(500).json({err})
          
      }
-    //  console.log(req.file);
+    //  console.log('files===',req.files);
      user.name=req.body.name
      user.description=req.body.description
-     if(req.file){
-        //  if(user.avatar){
-        //      fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
-        //  }
-         user.avatar=User.avatarPath+'/'+req.file.filename
+     if(req.files){
+         if(user.avatar){
+             fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
+         }
+         user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename
      }
      user.save();
      return res.status(200).json({user})
