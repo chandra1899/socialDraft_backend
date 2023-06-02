@@ -39,6 +39,8 @@ router.post('/create-session',(req,res,next)=>{
     })(req, res, next);
 }, userController.createSession);
 router.get('/sign-out', userController.destroySession);
+router.post('/sendOtp', userController.sendOTP);
+router.post('/verifyOtp', userController.verifyOtp);
 router.get('/getuser',passport.checkAuthentication, userController.getuser);
 router.get('/userdetails/:id', userController.userdetails);
 

@@ -11,7 +11,9 @@ passport.use(new LocalStrategy({
         try {
             let user=await User.findOne({email:email});
                 //    console.log('in statergy');
-                   let match=await bcrypt.compare(password,user.password);
+                let match
+                if(user)
+                   match=await bcrypt.compare(password,user.password);
                 //    console.log(match);
             if(!user || !match){
                 // console.log('Invalid username/password');

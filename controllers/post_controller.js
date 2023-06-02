@@ -4,7 +4,8 @@ const User=require('../models/user')
 const Bookmark=require('../models/bookmark')
 const Like=require('../models/like')
 const fs=require('fs');
-const path=require('path');
+const path=require('path');3
+// const postMailer=require('../mailers/otp');
 
 module.exports.create=async (req,res)=>{
     try {
@@ -33,6 +34,7 @@ module.exports.create=async (req,res)=>{
             }
             user.save();
             post.save();
+            // postMailer.newPost(post)
         return res.status(200).json({msg:"post created successfully"})
 
             // user.save();
