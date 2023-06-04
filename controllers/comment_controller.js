@@ -6,15 +6,17 @@ module.exports.create=async (req,res)=>{
     try {
         // console.log(req.body);
      let post=await Post.findById(req.body.post);
+     let comment;
      if(post){
-         let comment=await Comment.create({
+         comment=await Comment.create({
              content:req.body.content,
              post:req.body.post,
              user:req.user._id
          });
+         comment=await comment.populate('user');
          post.comments.push(comment);
          post.save();
-         res.status(200).json({msg:"sucessfully created comment"})
+         res.status(200).json({comment})
      }
     } catch (err) {
      console.log("error in creating the comment",err);
