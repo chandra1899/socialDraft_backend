@@ -43,6 +43,7 @@ router.post('/sendOtp', userController.sendOTP);
 router.post('/verifyOtp', userController.verifyOtp);
 router.get('/getuser',passport.checkAuthentication, userController.getuser);
 router.get('/userdetails/:id', userController.userdetails);
+router.get('/getReceiver/:id', userController.getReceiver);
 
 //google
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email'] }));

@@ -157,6 +157,15 @@ module.exports.userdetails=async (req,res)=>{
     }
 }
 
+module.exports.getReceiver=async (req,res)=>{
+    try {
+        let user=await User.findById(req.params.id);
+            return res.status(200).json({user})
+    } catch (err) {
+        return res.status(500).json({err})
+    }
+}
+
 const generateOtp=()=>{
     let otp='';
     for(let i=0;i<4;i++){

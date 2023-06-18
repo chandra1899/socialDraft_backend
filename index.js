@@ -12,6 +12,7 @@ const passportLocal=require('./config/passport-local-strategy');
 const passportGoogle=require('./config/passport-google-oauth2-strategy');
 const passportFacebook=require('./config/passport-facebook-strategy')
 const MongoStore = require('connect-mongo');
+const socket = require("socket.io");
 
 const bodyParser = require('body-parser');
 
@@ -55,7 +56,32 @@ app.use(passport.session());
 
 app.use('/',require('./routes')); 
 
-app.listen(PORT,(err)=>{
+const server =app.listen(PORT,(err)=>{
     if(err) console.log("error in running server",err);
     console.log(`Server is successfully running on port: ${PORT}`); 
 })
+
+//socket.io
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
+
+global.onlineUsers = new Map();
+io.on("connection", (socket) => {
+  global.chatSocket = socket;
+  socket.on("add-user", (userId) => {
+    console.log('user connected');
+    onlineUsers.set(userId, socket.id);
+  });
+
+  socket.on("send-msg", async (data) => {
+    const sendUserSocket = await onlineUsers.get(data.to);
+    // console.log(sendUserSocket);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+    }
+  });
+});
