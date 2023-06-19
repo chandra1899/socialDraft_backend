@@ -41,7 +41,13 @@ const userSchema=new mongoose.Schema({
     },
     avatar:{
         type:String
-    }
+    },
+    retweets:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Retweet'
+        }
+    ]
 },{
     timestamps:true
 });

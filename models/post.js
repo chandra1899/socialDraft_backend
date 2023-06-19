@@ -2,12 +2,19 @@ const mongoose=require('mongoose');
 
 const postSchema=new mongoose.Schema({
     content:{
-        type:String,
-        required:true
+        type:String
     },
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
+    },
+    type:{
+        type:String,
+        enum:['Retweet','Post']
+    },
+    retweetedRef:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Post'
     },
     //include all the ids of comments in an array
     comments:[
@@ -24,7 +31,13 @@ const postSchema=new mongoose.Schema({
     ],
     photo:{
         type:String
-    }
+    },
+    retweets:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Retweet'
+        }
+    ],
 },{
     timestamps:true
 });
