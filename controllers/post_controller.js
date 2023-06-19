@@ -94,7 +94,27 @@ module.exports.yourposts=async (req,res)=>{
     console.log(yourposts);
     return res.status(200).json({yourposts});
     } catch (err) {
-    return res.status(404).json({err});   
+    return res.status(500).json({err});   
+    }
+}
+
+module.exports.yourretweets=async (req,res)=>{
+    try {
+        // console.log('user',req.user);
+    let user=await req.user.populate({
+        path:'retweets',
+        populate:{
+            path:'retweet',
+            populate:{
+                path:'user'
+            }
+        }
+    });
+    let yourretweets=await user.retweets.reverse();
+    console.log(yourretweets);
+    return res.status(200).json({yourretweets});
+    } catch (err) {
+    return res.status(500).json({err});   
     }
 }
 
@@ -116,11 +136,19 @@ module.exports.getpost=async (req,res)=>{
 
 module.exports.savedposts=async (req,res)=>{
     try {
-    let savedposts=await Bookmark.find({user:req.user._id}).populate({
+    let savedposts=await Bookmark.find({user:req.user._id})
+    .sort('-createdAt')
+    .populate({
         path:'bookmark',
+        populate:[{
+            path:'user'
+        },
+        {path:'retweetedRef',
         populate:{
             path:'user'
-        }})
+        }}
+    ]         
+    })
     // console.log(savedposts);
     return res.status(200).json({savedposts})
 

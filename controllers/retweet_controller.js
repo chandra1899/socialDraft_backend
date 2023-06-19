@@ -5,6 +5,7 @@ const Post=require('../models/post');
 module.exports.toggleRetweet=async (req,res)=>{
     let user=await User.findById( req.user._id);
     let deleted=false;
+    let retweetedpost=await Post.findById(req.query.id);
 
     let existing=await Retweet.findOne({
         user: req.user._id,
@@ -22,6 +23,8 @@ module.exports.toggleRetweet=async (req,res)=>{
         })
         user.retweets.pull(existing._id)
         user.save()
+        retweetedpost.retweets.pull(existing._id);
+        retweetedpost.save();
         deleted=true;
         res.status(200).json({deleted})
     }else{
@@ -36,6 +39,8 @@ module.exports.toggleRetweet=async (req,res)=>{
         })
         user.retweets.push(newRetweet._id)
         user.save();
+        retweetedpost.retweets.push(newRetweet._id)
+        retweetedpost.save();
         res.status(200).json({deleted})
     }
     return ;
