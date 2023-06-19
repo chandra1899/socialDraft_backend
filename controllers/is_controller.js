@@ -4,6 +4,7 @@ const Post=require('../models/post')
 const Comment=require('../models/comment')
 const Follow=require('../models/follow')
 const User=require('../models/user')
+const Retweet=require('../models/retweet')
 
 
 module.exports.isliked=async (req,res)=>{
@@ -71,5 +72,25 @@ module.exports.isfollow=async (req,res)=>{
     } catch (err) {
         return res.status(404).json({error:err})
         
+    }
+}
+
+module.exports.retweeted=async (req,res)=>{
+    try {
+        let retweetexist=false;
+        let retweet=await Retweet.findOne({
+            retweet:req.query.id,
+            user:req.user._id
+        })
+        if(retweet) {
+            retweetexist=true
+        }
+        let post=await Post.findById(req.query.id)
+        let retweets=post.retweets.length
+        // console.log(likes);
+        // console.log(user);
+        return res.status(200).json({retweetexist,retweets})
+    } catch (error) {
+        return res.status(404).json({error})
     }
 }

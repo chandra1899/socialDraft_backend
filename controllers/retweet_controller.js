@@ -1,6 +1,9 @@
 const User=require('../models/user');
 const Retweet=require('../models/retweet');
 const Post=require('../models/post');
+const Comment=require('../models/comment');
+const Bookmark=require('../models/bookmark')
+const Like=require('../models/like')
 
 module.exports.toggleRetweet=async (req,res)=>{
     let user=await User.findById( req.user._id);
@@ -16,6 +19,19 @@ module.exports.toggleRetweet=async (req,res)=>{
         user:req.user._id,
         retweet:req.query.id
         });
+        let retweetP=await Post.findOne({
+            type:'Retweet',
+            user:req.user._id,
+            retweetedRef:req.query.id
+        }).populate('user').populate('comments');
+        let comments=retweetP.comments;
+        await Like.deleteMany({likable:retweetP._id,onModel:'Post'});
+        for(comment of comments){
+            await Like.deleteMany({_id:{$in:comment.likes}});
+        }
+        await Comment.deleteMany({post:retweetP._id});
+        await Bookmark.deleteMany({bookmark:retweetP._id});
+
         await Post.findOneAndDelete({
             type:'Retweet',
             user:req.user._id,
