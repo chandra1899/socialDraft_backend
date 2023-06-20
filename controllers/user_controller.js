@@ -32,8 +32,11 @@ module.exports.update=async (req,res)=>{
      user.name=req.body.name
      user.description=req.body.description
      if(req.files.avatar){
+        console.log(user.avatar);
+        if(!user.photoLocal)
         fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
         user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename
+        user.photoLocal=false;
      }
      user.save();
      return res.status(200).json({user})
@@ -44,31 +47,36 @@ module.exports.update=async (req,res)=>{
 }
 
 module.exports.create=async (req,res)=>{
-    if(req.body.password!=req.body.confirm_password){
-        return res.status(401).json({error:"password and confirm_password does not match"})
-    }
     try {
-        let candidate=await User.findOne({email:req.body.email});
-        if(!candidate){
-            User.uploadedAvatar(req,res,async(err)=>{
-                if(err){
-                    console.log('***** multer error',err);
-                    console.log(req.file);
-                    console.log("error",err);
-                   return res.status(500).json({err})      
-                }
-               //  console.log('files===',req.files);
-               console.log('reqbody',req.body);
-               let user=await User.create(req.body);
-                user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename;
-                user.save();
-                signUpMail.signUp(user.email)
-                return res.status(200).json({msg:"successfully created user"})
-               })
-        }
-        else{
-            res.status(400).json({error:"user already exites"})
-        }
+            
+                User.uploadedAvatar(req,res,async(err)=>{
+                    if(err){
+                        console.log('***** multer error',err);
+                        console.log(req.file);
+                        console.log("error",err);
+                       return res.status(500).json({err})      
+                    }
+                    if(req.body.password!=req.body.confirm_password){
+                        return res.status(401).json({error:"password and confirm_password does not match"})
+                    }
+                    let candidate=await User.findOne({email:req.body.email});
+                    console.log('files===',req.files);
+                   if(!candidate){
+                    let user=await User.create(req.body);
+                    if(req.body.latest!=='avatar_1' && req.body.latest!=='avatar_2' && req.body.latest!=='avatar_3'){ 
+                        user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename;
+                        user.photoLocal=false;
+                    }else{
+                        user.avatar=User.avatarPath_a+'/'+req.body.latest+'.png';
+                        user.photoLocal=true;
+                    }
+                    user.save();
+                            signUpMail.signUp(user.email)
+                            return res.status(200).json({msg:"successfully created user"})
+                   }else{
+                        res.status(400).json({error:"user already exites"})
+                    }
+                   }) 
     } catch (err) {
         console.log("error in creating user in database",err);
         return res.status(500).json({error:err}) ;

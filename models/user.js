@@ -4,6 +4,7 @@ const jwt=require('jsonwebtoken')
 const multer=require(('multer'));
 const path=require('path');
 const AVATAR_PATH=path.join('/frontend/src/assets/uploads/users/avatar');
+const AVATAR_PATH_A=path.join('/frontend/src/assets');
 const POST_PATH=path.join('/frontend/src/assets/uploads/users/posts');
 
 const userSchema=new mongoose.Schema({
@@ -47,7 +48,10 @@ const userSchema=new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:'Retweet'
         }
-    ]
+    ],
+    photoLocal:{
+        type:Boolean
+    }
 },{
     timestamps:true
 });
@@ -93,6 +97,7 @@ userSchema.statics.uploadedAvatar=multer({ storage: storage }).fields([
     { name: 'postPhoto', maxCount: 1 }
   ]);
 userSchema.statics.avatarPath=AVATAR_PATH; 
+userSchema.statics.avatarPath_a=AVATAR_PATH_A; 
 userSchema.statics.userPostPath=POST_PATH; 
 
 const User=mongoose.model('User',userSchema);
