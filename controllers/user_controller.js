@@ -28,14 +28,12 @@ module.exports.update=async (req,res)=>{
         return res.status(500).json({err})
          
      }
-    //  console.log('files===',req.files);
+     console.log('files===',req.files);
      user.name=req.body.name
      user.description=req.body.description
-     if(req.files){
-         if(user.avatar){
-             fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
-         }
-         user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename
+     if(req.files.avatar){
+        fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
+        user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename
      }
      user.save();
      return res.status(200).json({user})
@@ -46,16 +44,27 @@ module.exports.update=async (req,res)=>{
 }
 
 module.exports.create=async (req,res)=>{
-    // console.log(req.body);
     if(req.body.password!=req.body.confirm_password){
         return res.status(401).json({error:"password and confirm_password does not match"})
     }
     try {
-        let user=await User.findOne({email:req.body.email});
-        if(!user){
-            let user=await User.create(req.body);
-            signUpMail.signUp(user.email)
-            return res.status(200).json({msg:"successfully created user"})
+        let candidate=await User.findOne({email:req.body.email});
+        if(!candidate){
+            User.uploadedAvatar(req,res,async(err)=>{
+                if(err){
+                    console.log('***** multer error',err);
+                    console.log(req.file);
+                    console.log("error",err);
+                   return res.status(500).json({err})      
+                }
+               //  console.log('files===',req.files);
+               console.log('reqbody',req.body);
+               let user=await User.create(req.body);
+                user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename;
+                user.save();
+                signUpMail.signUp(user.email)
+                return res.status(200).json({msg:"successfully created user"})
+               })
         }
         else{
             res.status(400).json({error:"user already exites"})
