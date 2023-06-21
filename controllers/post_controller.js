@@ -33,9 +33,10 @@ module.exports.create=async (req,res)=>{
                 post.photo=User.userPostPath+'/'+req.files.postPhoto[0].filename
             }
             user.save();
+            post=await post.populate('user')
             post.save();
             // postMailer.newPost(post)
-        return res.status(200).json({msg:"post created successfully"})
+        return res.status(200).json({post})
 
             // user.save();
             // return res.status(200).json({user})

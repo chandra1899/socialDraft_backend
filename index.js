@@ -69,8 +69,20 @@ const io = socket(server, {
   },
 });
 
+//different landSpace for posts
+// const postsNamespace = ;
+
+io.of("/posts").on("connection", (socket) => {
+  console.log('user connected to postsNamespace');
+  socket.on('uploadedPost',(data)=>{
+    console.log(data.newPost);
+    io.of("/posts").emit('postarrived',data);
+  })
+});
+
 global.onlineUsers = new Map();
-io.on("connection", (socket) => {
+io.of('/chat').on("connection", (socket) => {
+  console.log('user connected to normalNamespace');
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
     console.log('user connected');
