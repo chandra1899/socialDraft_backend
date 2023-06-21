@@ -78,7 +78,6 @@ userSchema.methods.generateAuthToken=async function(){
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        console.log(file.fieldname,file);
         if(file.fieldname=='avatar')
       cb(null, path.join(__dirname,'..','..',AVATAR_PATH))
       else 

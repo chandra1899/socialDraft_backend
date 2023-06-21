@@ -10,20 +10,15 @@ passport.use(new LocalStrategy({
         //find a user and estblish identity
         try {
             let user=await User.findOne({email:email});
-                //    console.log('in statergy');
                 let match
                 if(user)
                    match=await bcrypt.compare(password,user.password);
-                //    console.log(match);
             if(!user || !match){
-                // console.log('Invalid username/password');
-                // return res.status(401)
                 console.log('error','Invalid Username/Password');
                 return done(null,false)
             }
             return done(null, user);
         } catch (error) {
-            // console.log("error in finding user -->passport");
            console.log('error',error);
             return done(error);
         }
@@ -46,10 +41,7 @@ passport.deserializeUser(async (id,done)=>{
 });
 
 passport.checkAuthentication=(req,res,next)=>{
-    // console.log('up auth');
-    // console.log(req.session);
     if(req.isAuthenticated()){
-    // console.log('yes auth');
         return next();
     }
     console.log('not auth');
@@ -60,7 +52,6 @@ passport.setAuthenticatedUser=(req,res,next)=>{
     if(req.isAuthenticated()){
         res.locals.user=req.user;
     }
-    // console.log('im in setauth');
     next();
 }
 

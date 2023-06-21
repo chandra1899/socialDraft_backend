@@ -1,7 +1,6 @@
 const nodemailer=require('../config/nodemailer');
 
 module.exports.newPost = (post) => {
-    // console.log('inside newComment mailer', comment);
    
     nodemailer.transporter.sendMail({
        from: 'c4746665@gmail.com',

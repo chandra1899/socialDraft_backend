@@ -3,8 +3,9 @@ const Comment=require('../models/comment');
 const User=require('../models/user')
 const Bookmark=require('../models/bookmark')
 const Like=require('../models/like')
+const Retweet=require('../models/retweet')
 const fs=require('fs');
-const path=require('path');3
+const path=require('path');
 // const postMailer=require('../mailers/otp');
 
 module.exports.create=async (req,res)=>{
@@ -55,12 +56,7 @@ module.exports.create=async (req,res)=>{
 
 module.exports.destroy=async (req,res)=>{
     try {
-        // console.log(req.params.id);
-        // let user=await User.findById(req.user._id)
         let post=await Post.findById(req.params.id).populate('user').populate('comments');
-        // console.log(popst.user);
-        // console.log(req.user._id);
-        // console.log(post);
         let comments=await post.comments
         if(post.user.id==req.user._id){
             console.log('in delete');
@@ -74,8 +70,38 @@ module.exports.destroy=async (req,res)=>{
             if(post.photo){
                 fs.unlinkSync(path.join(__dirname,'..','..',post.photo));
             }
-            await Post.findByIdAndDelete(post._id);
-            
+
+            // await Retweet.deleteMany({
+            //     retweet:req.params.id
+            //     });
+
+                let retweetedPosts=await Post.find({
+                    type:'Retweet',
+                    retweetedRef:req.params.id
+                })
+
+                for(retweetedPost of retweetedPosts){
+                    let retweet=await Post.findById(retweetedPost._id).populate('user').populate('comments')
+                    let retweetcomments=await retweet.comments
+                        console.log('in delete retweets');
+                        await Like.deleteMany({likable:retweet._id,onModel:'Post'});
+                        for(retweetcomment of retweetcomments){
+                            await Like.deleteMany({_id:{$in:retweetcomment.likes}});
+                        }
+                        await Comment.deleteMany({post:retweet._id});
+                        await Bookmark.deleteMany({bookmark:retweet._id});
+                        let retweetedUser=await User.findById(retweet.user._id);
+                        let existingretweet=await Retweet.findOne({
+                            user: retweetedUser._id,
+                            retweet:req.params.id
+                        })
+                        retweetedUser.retweets.pull(existingretweet._id)
+                        retweetedUser.save();
+                        await Retweet.findByIdAndDelete(existingretweet._id);
+                        await Post.findByIdAndDelete(retweet._id);
+                }
+
+                await Post.findByIdAndDelete(post._id);
             return res.status(200).json({msg:"sucessfully deleted post"});
         }else{
             return res.status(402).json({msg:"can't delete post"})
@@ -89,7 +115,6 @@ module.exports.destroy=async (req,res)=>{
 
 module.exports.yourposts=async (req,res)=>{
     try {
-        // console.log(req.user);
     let user=await req.user.populate('posts');
     let yourposts=await user.posts.reverse();
     console.log(yourposts);
@@ -101,7 +126,6 @@ module.exports.yourposts=async (req,res)=>{
 
 module.exports.yourretweets=async (req,res)=>{
     try {
-        // console.log('user',req.user);
     let user=await req.user.populate({
         path:'retweets',
         populate:{
@@ -134,7 +158,6 @@ module.exports.getpost=async (req,res)=>{
                 path:'user'
             }
         })
-    // console.log(post);
     return res.status(200).json({post})
 
     } catch (err) {
@@ -158,7 +181,6 @@ module.exports.savedposts=async (req,res)=>{
         }}
     ]         
     })
-    // console.log(savedposts);
     return res.status(200).json({savedposts})
 
     } catch (err) {

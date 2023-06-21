@@ -10,15 +10,6 @@ const signUpMail=require('../mailers/signUp');
 
 module.exports.update=async (req,res)=>{
     try {
-        // console.log(req.body);
-    // let user=await User.findById(req.user._id)
-        // user.name=req.body.name
-        // user.description=req.body.description
-    //     await user.save()
-    //     // console.log(user);
-    //     return res.status(200).json({user})
-    // console.log(req.file);
-
     let user=await User.findById(req.user._id);
     User.uploadedAvatar(req,res,(err)=>{
      if(err){
@@ -84,22 +75,15 @@ module.exports.create=async (req,res)=>{
 }
 
 module.exports.signIn=async (req,res)=>{
-    // if(!req.isAuthenticated()){
-    //     return res.status(401).json({msg:"unable to Authenticated"})
-    // }
     try {
-        // console.log(req.body);
-        // console.log('under signIn');
         const {email,password}=req.body;
     if(!email || !password){
         return res.status(404).json({msg:"please fill the data"});
     }
 
     let userlogin=await User.findOne({email:email});
-    // console.log(userlogin);
     if(userlogin){
         let match=await bcrypt.compare(password,userlogin.password);
-        // console.log(match);
         if(match){
             const tok=await userlogin.generateAuthToken();
             console.log(tok);
@@ -121,16 +105,8 @@ module.exports.signIn=async (req,res)=>{
 }
 
 module.exports.createSession=(req,res)=>{
-    // console.log(req.user);
     console.log('sucesfully logged in');
-    // if(myerr){
-    //     console.log(myerr);
-    // return res.status(500).json({msg:"sucessfully created session"})
-
-    // }
     return res.status(200).json({msg:"sucessfully created session"})
-
-    // return res.redirect('/');
 }
 
 module.exports.destroySession=(req,res)=>{
@@ -138,16 +114,12 @@ module.exports.destroySession=(req,res)=>{
         if(err){
             return next(err);
         }
-        // console.log(req.user);
         return res.status(200).json({msg:"successfully signed out"})
     });
 }
 module.exports.getuser=async (req,res)=>{
-    // console.log(req.rootUser);
     try {
-        // let can=await req.rootUser;
         if(req.user){
-            // console.log(can);
             let can=req.user;
             return await res.status(200).json({can})
         }
@@ -155,7 +127,6 @@ module.exports.getuser=async (req,res)=>{
             return res.status(404).json({msg:"no user"})
         }
     } catch (err) {
-        // console.log(err);
         return res.status(404).json({msg:"error in getting user",error:err})
     }  
 }

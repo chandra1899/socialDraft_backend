@@ -4,7 +4,6 @@ const Like=require('../models/like')
 
 module.exports.create=async (req,res)=>{
     try {
-        // console.log(req.body);
      let post=await Post.findById(req.body.post);
      let comment;
      if(post){

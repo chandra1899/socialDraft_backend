@@ -27,8 +27,6 @@ module.exports.isliked=async (req,res)=>{
         let comment=await Comment.findById(req.query.id)
         likes=comment.likes.length
        }
-        // console.log(likes);
-        // console.log(user);
         return res.status(200).json({likeexist,likes})
 
     } catch (err) {
@@ -56,7 +54,6 @@ module.exports.issaved=async (req,res)=>{
 module.exports.isfollow=async (req,res)=>{
     try {
         let followexist=false;
-        console.log(req.query.id);
         let follow=await Follow.findOne({
             user:req.user._id,
             followable:req.query.id
@@ -87,8 +84,6 @@ module.exports.retweeted=async (req,res)=>{
         }
         let post=await Post.findById(req.query.id)
         let retweets=post.retweets.length
-        // console.log(likes);
-        // console.log(user);
         return res.status(200).json({retweetexist,retweets})
     } catch (error) {
         return res.status(404).json({error})

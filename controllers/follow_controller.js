@@ -3,16 +3,13 @@ const Follow=require('../models/follow');
 
 module.exports.togglefollow=async (req,res)=>{
     try {
-        // console.log(req.user);
         let deleted=false;
     let father=await User.findById(req.query.id)
     let son=await User.findById(req.user._id)
-    // console.log(father,son);
         let existingFollow=await Follow.findOne({
             user:req.user._id,
             followable:req.query.id
         })
-        // console.log(existingFollow);
         if(existingFollow){
             son.following.pull(existingFollow._id)
             son.save();
@@ -50,9 +47,7 @@ module.exports.yourfollowing=async (req,res)=>{
             populate:{
                 path:'followable'
             }})
-    // console.log(user);
     let following=await user.following;
-    // console.log(following);
     return res.status(200).json({following})
     } catch (err) {
     return res.status(500).json({err})

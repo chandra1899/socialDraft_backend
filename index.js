@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log(process.env.PORT);
 const express = require('express');
 const cookieParser=require('cookie-parser');
 const path=require('path')
@@ -44,15 +43,12 @@ app.use(session({
         { 
             mongoUrl: 'mongodb://127.0.0.1:27017/SocialMedia`'
          },function(err){
-            console.log(err || "connect mongo setup ok");
          }
          )
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-// app.use(passport.setAuthenticatedUser);
 
 app.use('/',require('./routes')); 
 
@@ -73,25 +69,20 @@ const io = socket(server, {
 // const postsNamespace = ;
 
 io.of("/posts").on("connection", (socket) => {
-  console.log('user connected to postsNamespace');
   socket.on('uploadedPost',(data)=>{
-    console.log(data.newPost);
     io.of("/posts").emit('postarrived',data);
   })
 });
 
 global.onlineUsers = new Map();
 io.of('/chat').on("connection", (socket) => {
-  console.log('user connected to normalNamespace');
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
-    console.log('user connected');
     onlineUsers.set(userId, socket.id);
   });
 
   socket.on("send-msg", async (data) => {
     const sendUserSocket = await onlineUsers.get(data.to);
-    // console.log(sendUserSocket);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("msg-recieve", data.msg);
     }

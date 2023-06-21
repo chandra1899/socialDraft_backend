@@ -22,7 +22,6 @@ router.post('/destroy/:id',async (req,res)=>{
 router.post('/sign-in',userController.signIn);
 router.post('/update',passport.checkAuthentication,userController.update);
 router.post('/create-session',(req,res,next)=>{
-    // console.log('hello');
     passport.authenticate('local',async (err,user,info)=>{
         if(err){
             return res.status(500).json({err})
@@ -30,7 +29,6 @@ router.post('/create-session',(req,res,next)=>{
         if(!user){
             return res.status(401).json({msg:"no user found"})
         }
-        // console.log(user);
         await req.logIn(user,(err)=>{
             if(err) return res.status(500).json({err})
             next();
@@ -57,8 +55,3 @@ router.get('/auth/facebook/callback',
 
 
 module.exports = router;
-// (req,res,next)=>{
-//     req.body.email=req.body.Email;
-//     req.body.password=req.body.Password;
-//     console.log(req.body);
-//     next();},

@@ -1,8 +1,6 @@
 const nodemailer=require('../config/nodemailer');
 
-module.exports.sendOtp = async(email,otp) => {
-    // console.log('inside newComment mailer', comment);
-   
+module.exports.sendOtp = async(email,otp) => {   
    try {
     let info=await nodemailer.transporter.sendMail({
         from: 'c4746665@gmail.com',
