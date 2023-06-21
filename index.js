@@ -32,8 +32,8 @@ app.use(cookieParser());
 app.use('/photo',express.static(path.join(__dirname,'..')));
 
 app.use(session({
-    name:'SocialMedia',
-    secret:"something",
+    name:process.env.SESSION_NAME,
+    secret:process.env.SESSION_SECRET,
     saveUninitialized:false,
     resave:false,
     cookie:{
@@ -41,7 +41,7 @@ app.use(session({
     },
     store: MongoStore.create(
         { 
-            mongoUrl: 'mongodb://127.0.0.1:27017/SocialMedia`'
+            mongoUrl: process.env.MONGOOSE_URL
          },function(err){
          }
          )

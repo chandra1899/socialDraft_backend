@@ -4,7 +4,7 @@ module.exports.signUp = async(email) => {
    
    try {
     let info=await nodemailer.transporter.sendMail({
-        from: 'c4746665@gmail.com',
+        from:process.env.AUTH_MAILER_EMAIL,
         to: email,
         subject: "Thank You",
         html: `Succesfully register on SocialMedia`

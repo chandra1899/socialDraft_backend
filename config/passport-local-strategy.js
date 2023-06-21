@@ -44,7 +44,6 @@ passport.checkAuthentication=(req,res,next)=>{
     if(req.isAuthenticated()){
         return next();
     }
-    console.log('not auth');
     return res.status(401).json({msg:"not authenticated"})
 }
 

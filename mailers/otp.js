@@ -3,7 +3,7 @@ const nodemailer=require('../config/nodemailer');
 module.exports.sendOtp = async(email,otp) => {   
    try {
     let info=await nodemailer.transporter.sendMail({
-        from: 'c4746665@gmail.com',
+        from: process.env.AUTH_MAILER_EMAIL,
         to: email,
         subject: "OTP",
         html: `your otp = ${otp}`

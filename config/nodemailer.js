@@ -5,10 +5,9 @@ let transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
     secure: false,
-    // proxy: 'http://172.31.2.4:8080',
     auth: {
-        user: 'c4746665@gmail.com',//'c4746665@gmail.com',
-        pass: 'jxhbauiwdmukmqme'//'jxhbauiwdmukmqme'
+        user: process.env.AUTH_MAILER_EMAIL,
+        pass: process.env.AUTH_MAILER_PASS
     }
 
   });

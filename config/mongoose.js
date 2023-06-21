@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect(`mongodb://127.0.0.1:27017/SocialMedia`);
+mongoose.connect(process.env.MONGOOSE_URL);
 
 const db = mongoose.connection;
 

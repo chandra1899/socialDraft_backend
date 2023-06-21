@@ -4,14 +4,10 @@ const crypto=require('crypto');
 const User=require('../models/user');
 const signUpMail=require('../mailers/signUp');
 
-// const HttpsProxyAgent = require('https-proxy-agent');
-// const agent = new HttpsProxyAgent(process.env.HTTP_PROXY || "http://172.31.2.4:8080");
-// const env=require('./environment');
-
 const gStrategy=new googleStrategy({
-   clientID:'976308820627-eh73r6oq4s3rigvpk34e436lplfrkmn8.apps.googleusercontent.com',
-   clientSecret:'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',
-   callbackURL:'http://localhost:8000/api/user/auth/google/callback'
+   clientID:process.env.GOOGLE_CLIENT_ID,
+   clientSecret:process.env.GOOGLE_CLIENT_SECRET,
+   callbackURL:process.env.GOOGLE_CALLBACKURL
     },async (accessToken,refreshToken,profile,done)=>{
         try {
             let user=await User.findOne({email:profile.emails[0].value}).exec();
@@ -39,8 +35,6 @@ const gStrategy=new googleStrategy({
         }
     }
 );
-
-// gStrategy._oauth2.setAgent(agent);
 
 passport.use(gStrategy);
 
