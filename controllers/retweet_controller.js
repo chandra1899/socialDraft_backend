@@ -48,16 +48,21 @@ module.exports.toggleRetweet=async (req,res)=>{
         user: req.user._id,
         retweet:req.query.id
         })
-        await Post.create({
+        let post=await Post.create({
             type:'Retweet',
             user:req.user._id,
             retweetedRef:req.query.id
         })
+        post=await post.populate([
+            {path:'user'},
+            {path:'likes'},
+            {path:'retweetedRef',populate:{path:'user'}}
+        ])
         user.retweets.push(newRetweet._id)
         user.save();
         retweetedpost.retweets.push(newRetweet._id)
         retweetedpost.save();
-        res.status(200).json({deleted})
+        res.status(200).json({deleted,post})
     }
     return ;
 }
