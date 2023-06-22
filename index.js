@@ -43,6 +43,7 @@ app.use(session({
         { 
             mongoUrl: process.env.MONGOOSE_URL
          },function(err){
+          console.log(err);
          }
          )
 }));
