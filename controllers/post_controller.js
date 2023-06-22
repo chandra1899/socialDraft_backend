@@ -6,7 +6,6 @@ const Like=require('../models/like')
 const Retweet=require('../models/retweet')
 const fs=require('fs');
 const path=require('path');
-// const postMailer=require('../mailers/otp');
 
 module.exports.create=async (req,res)=>{
     try {
@@ -25,30 +24,14 @@ module.exports.create=async (req,res)=>{
                 user:req.user._id
             });
             user.posts.push(post)
-            // user.name=req.body.name
-            // user.description=req.body.description
             if(req.files.postPhoto){
-                // if(user.avatar){
-                //     fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
-                // }
                 post.photo=User.userPostPath+'/'+req.files.postPhoto[0].filename
             }
             user.save();
             post=await post.populate('user')
             post.save();
-            // postMailer.newPost(post)
         return res.status(200).json({post})
-
-            // user.save();
-            // return res.status(200).json({user})
            })
-        // let post=await Post.create({
-        //     content:req.body.content,
-        //     user:req.user._id
-        // });
-        // let user=await User.findById(req.user._id);
-        // user.posts.push(post._id);
-        // user.save();
     } catch (error) {
         return res.status(500).json({error:error})
   }
@@ -70,10 +53,6 @@ module.exports.destroy=async (req,res)=>{
             if(post.photo){
                 fs.unlinkSync(path.join(__dirname,'..','..',post.photo));
             }
-
-            // await Retweet.deleteMany({
-            //     retweet:req.params.id
-            //     });
 
                 let retweetedPosts=await Post.find({
                     type:'Retweet',

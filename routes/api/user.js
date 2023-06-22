@@ -3,7 +3,6 @@ const router = express.Router();
 const userController=require('../../controllers/user_controller')
 const passport=require('passport')
 const User=require('../../models/user')
-const authenticate=require('../../middlewares/auth')
 
 router.post('/create',userController.create)
 router.post('/destroy/:id',async (req,res)=>{
