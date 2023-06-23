@@ -3,9 +3,9 @@ const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 const multer=require(('multer'));
 const path=require('path');
-const AVATAR_PATH=path.join('/frontend/src/assets/uploads/users/avatar');
-const AVATAR_PATH_A=path.join('/frontend/src/assets');
-const POST_PATH=path.join('/frontend/src/assets/uploads/users/posts');
+const AVATAR_PATH=path.join('/socialDraft_frontend/src/assets/uploads/users/avatar');
+const AVATAR_PATH_A=path.join('/socialDraft_frontend/src/assets');
+const POST_PATH=path.join('/socialDraft_frontend/src/assets/uploads/users/posts');
 
 const userSchema=new mongoose.Schema({
     email:{
