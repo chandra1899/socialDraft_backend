@@ -2,23 +2,8 @@ const express = require('express');
 const router = express.Router();
 const userController=require('../../controllers/user_controller')
 const passport=require('passport')
-const User=require('../../models/user')
 
 router.post('/create',userController.create)
-router.post('/destroy/:id',async (req,res)=>{
-    try {
-        let id=req.params.id;
-    console.log(id);
-    await User.findByIdAndDelete(id);
-    console.log("deleted");
-    return ;
-        
-    } catch (err) {
-        console.log("unable to delete user");
-        return ;
-    }
-})
-router.post('/sign-in',userController.signIn);
 router.post('/update',passport.checkAuthentication,userController.update);
 router.post('/create-session',(req,res,next)=>{
     passport.authenticate('local',async (err,user,info)=>{

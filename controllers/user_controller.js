@@ -74,36 +74,6 @@ module.exports.create=async (req,res)=>{
     }
 }
 
-module.exports.signIn=async (req,res)=>{
-    try {
-        const {email,password}=req.body;
-    if(!email || !password){
-        return res.status(404).json({msg:"please fill the data"});
-    }
-
-    let userlogin=await User.findOne({email:email});
-    if(userlogin){
-        let match=await bcrypt.compare(password,userlogin.password);
-        if(match){
-            const tok=await userlogin.generateAuthToken();
-            console.log(tok);
-            await res.cookie("jwttoken",tok);
-            console.log(req.cookies);
-            console.log(tok);
-
-            return res.status(200).json({msg:"successfully signIn"})
-        }else{
-            return res.status(404).json({msg:"invalid username/password"})
-        }
-    }else{
-        return res.status(404).json({msg:"please signUp"})
-    }
-    
-    } catch (err) {
-        return res.status(400).json({msg:"error in signIn",error:err})
-    }
-}
-
 module.exports.createSession=(req,res)=>{
     console.log('sucesfully logged in');
     return res.status(200).json({msg:"sucessfully created session"})

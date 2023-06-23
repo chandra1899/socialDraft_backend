@@ -42,7 +42,6 @@ module.exports.destroy=async (req,res)=>{
         let post=await Post.findById(req.params.id).populate('user').populate('comments');
         let comments=await post.comments
         if(post.user.id==req.user._id){
-            console.log('in delete');
             await Like.deleteMany({likable:post._id,onModel:'Post'});
             for(comment of comments){
                 await Like.deleteMany({_id:{$in:comment.likes}});
@@ -62,7 +61,6 @@ module.exports.destroy=async (req,res)=>{
                 for(retweetedPost of retweetedPosts){
                     let retweet=await Post.findById(retweetedPost._id).populate('user').populate('comments')
                     let retweetcomments=await retweet.comments
-                        console.log('in delete retweets');
                         await Like.deleteMany({likable:retweet._id,onModel:'Post'});
                         for(retweetcomment of retweetcomments){
                             await Like.deleteMany({_id:{$in:retweetcomment.likes}});
@@ -96,7 +94,6 @@ module.exports.yourposts=async (req,res)=>{
     try {
     let user=await req.user.populate('posts');
     let yourposts=await user.posts.reverse();
-    console.log(yourposts);
     return res.status(200).json({yourposts});
     } catch (err) {
     return res.status(500).json({err});   
@@ -115,7 +112,6 @@ module.exports.yourretweets=async (req,res)=>{
         }
     });
     let yourretweets=await user.retweets.reverse();
-    console.log(yourretweets);
     return res.status(200).json({yourretweets});
     } catch (err) {
     return res.status(500).json({err});   
