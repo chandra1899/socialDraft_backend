@@ -2,14 +2,19 @@ const Post=require('../models/post')
 
 module.exports.home=async (req,res)=>{
     try {
-    let posts=await Post.find()
+    let posts=await Post.find({}).select("-photo")
     .sort('-createdAt')
-    .populate('user')
+    .populate({
+        path:'user',
+        select:'-avatar'
+    })
     .populate('likes')
     .populate({
         path:'retweetedRef',
+        select:'-photo',
         populate:{
-            path:'user'
+            path:'user',
+            select:'-avatar'
         }
     })
 

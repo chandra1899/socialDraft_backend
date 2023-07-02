@@ -34,7 +34,8 @@ const postSchema=new mongoose.Schema({
         contentType:String
     },
     isPhoto:{
-        type:Boolean
+        type:Boolean,
+        default:false
     },
     retweets:[
         {

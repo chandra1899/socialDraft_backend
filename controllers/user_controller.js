@@ -103,10 +103,12 @@ module.exports.getuser=async (req,res)=>{
 
 module.exports.userdetails=async (req,res)=>{
     try {
-        let user=await User.findById(req.params.id).populate({
+        let user=await User.findById(req.params.id).select("-avatar").populate({
             path:'posts',
+            select:'-photo',
             populate:{
-                path:'user'
+                path:'user',
+                select:'-avatar'
             }}).populate('followers');
             let posts=await user.posts
             return res.status(200).json({user,posts})
@@ -117,7 +119,7 @@ module.exports.userdetails=async (req,res)=>{
 
 module.exports.getReceiver=async (req,res)=>{
     try {
-        let user=await User.findById(req.params.id);
+        let user=await User.findById(req.params.id).select("-avatar");
             return res.status(200).json({user})
     } catch (err) {
         return res.status(500).json({err})

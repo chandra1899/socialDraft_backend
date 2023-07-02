@@ -11,18 +11,19 @@ module.exports.create=async (req,res)=>{
     try {
         let user=await User.findById(req.user._id)
             const {postPhoto}=req.files
-            let post=await Post.create({
+            let newpost=await Post.create({
                 content:req.fields.content,
                 user:req.user._id
             });
-            user.posts.push(post)
+            user.posts.push(newpost)
             if(req.files.postPhoto){
-                post.photo.data=fs.readFileSync(postPhoto.path);
-                post.photo.contentType=postPhoto.type;
+                newpost.photo.data=fs.readFileSync(postPhoto.path);
+                newpost.photo.contentType=postPhoto.type;
+                newpost.isPhoto=true;
             }
             user.save();
-            post=post=await post.populate('user')
-            post.save();
+            newpost.save();
+            let post=await Post.findById(newpost._id).select("-photo").populate('user')
         return res.status(200).json({post})
     } catch (error) {
         return res.status(500).json({error:error})
@@ -84,7 +85,10 @@ module.exports.destroy=async (req,res)=>{
 
 module.exports.yourposts=async (req,res)=>{
     try {
-    let user=await req.user.populate('posts');
+    let user=await User.findById(req.user._id).populate({
+        path:'posts',
+        select:"-photo"
+    });
     let yourposts=await user.posts.reverse();
     return res.status(200).json({yourposts});
     } catch (err) {
@@ -98,6 +102,7 @@ module.exports.yourretweets=async (req,res)=>{
         path:'retweets',
         populate:{
             path:'retweet',
+            select:"-photo",
             populate:{
                 path:'user'
             }
@@ -112,7 +117,7 @@ module.exports.yourretweets=async (req,res)=>{
 
 module.exports.getpost=async (req,res)=>{
     try {
-        let post=await Post.findById(req.params.id)
+        let post=await Post.findById(req.params.id).select("-photo")
         .populate('user')
         .populate({
         path:'comments',
@@ -121,6 +126,7 @@ module.exports.getpost=async (req,res)=>{
         }})
         .populate({
             path:'retweetedRef',
+            select:"-photo",
             populate:{
                 path:'user'
             }
@@ -139,10 +145,12 @@ module.exports.savedposts=async (req,res)=>{
     .sort('-createdAt')
     .populate({
         path:'bookmark',
+        select:'-photo',
         populate:[{
             path:'user'
         },
         {path:'retweetedRef',
+        select:'-photo',
         populate:{
             path:'user'
         }}
