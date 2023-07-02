@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const userController=require('../../controllers/user_controller')
+const {create,update,userAvatar,createSession,destroySession,sendOTP,verifyOtp,getuser,userdetails,getReceiver}=require('../../controllers/user_controller')
 const passport=require('passport')
 const formidable=require('formidable')
 
-router.post('/create',formidable(),userController.create)
-router.post('/update',formidable(),passport.checkAuthentication,userController.update);
-router.get('/userAvatar/:id',userController.userAvatar);
+router.post('/create',formidable(),create)
+router.post('/update',formidable(),passport.checkAuthentication,update);
+router.get('/userAvatar/:id',userAvatar);
 router.post('/create-session',(req,res,next)=>{
     passport.authenticate('local',async (err,user,info)=>{
         if(err){
@@ -21,17 +21,17 @@ router.post('/create-session',(req,res,next)=>{
         });
         
     })(req, res, next);
-}, userController.createSession);
-router.get('/sign-out', userController.destroySession);
-router.post('/sendOtp', userController.sendOTP);
-router.post('/verifyOtp', userController.verifyOtp);
-router.get('/getuser',passport.checkAuthentication, userController.getuser);
-router.get('/userdetails/:id', userController.userdetails);
-router.get('/getReceiver/:id', userController.getReceiver);
+}, createSession);
+router.get('/sign-out', destroySession);
+router.post('/sendOtp', sendOTP);
+router.post('/verifyOtp', verifyOtp);
+router.get('/getuser',passport.checkAuthentication, getuser);
+router.get('/userdetails/:id', userdetails);
+router.get('/getReceiver/:id', getReceiver);
 
 //google
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email'] }));
-router.get('/auth/google/callback',passport.authenticate('google',{successRedirect:'http://localhost:5173/',failureRedirect:'/users/sign-in'}),userController.createSession);
+router.get('/auth/google/callback',passport.authenticate('google',{successRedirect:'http://localhost:5173/',failureRedirect:'/users/sign-in'}),createSession);
 
 //facebook
 router.get('/auth/facebook',passport.authenticate('facebook',{ scope :'email' }));

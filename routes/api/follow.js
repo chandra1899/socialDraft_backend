@@ -1,9 +1,9 @@
 const express=require('express');
 const router=express.Router();
-const followController=require('../../controllers/follow_controller')
+const {yourfollowing,togglefollow}=require('../../controllers/follow_controller')
 const passport=require('passport')
 
-router.get('/following',passport.checkAuthentication,followController.yourfollowing);
-router.post('/',passport.checkAuthentication,followController.togglefollow);
+router.get('/following',passport.checkAuthentication,yourfollowing);
+router.post('/',passport.checkAuthentication,togglefollow);
 
 module.exports=router;

@@ -1,9 +1,9 @@
 const express=require('express');
 const router=express.Router();
-const likeController=require('../../controllers/like_controller')
+const {toggleLike}=require('../../controllers/like_controller')
 const passport=require('passport')
 
 
-router.post('/',passport.checkAuthentication,likeController.toggleLike)
+router.post('/',passport.checkAuthentication,toggleLike)
 
 module.exports=router;

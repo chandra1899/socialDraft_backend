@@ -1,6 +1,6 @@
 const express=require('express');
 const router=express.Router();
-const homeController=require('../../controllers/home_controller')
+const {home}=require('../../controllers/home_controller')
 
 router.use('/user',require('./user'))
 router.use('/post',require('./post'))
@@ -11,6 +11,6 @@ router.use('/bookmark',require('./bookmark'))
 router.use('/retweet',require('./retweet'))
 router.use('/chat',require('./message'))
 router.use('/is',require('./is'))
-router.use('/',homeController.home)
+router.use('/',home)
 
 module.exports=router;

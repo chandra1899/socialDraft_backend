@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const passport=require('passport')
-const retweetController=require('../../controllers/retweet_controller')
+const {toggleRetweet}=require('../../controllers/retweet_controller')
 
-router.post('/',passport.checkAuthentication,retweetController.toggleRetweet);
+router.post('/',passport.checkAuthentication,toggleRetweet);
 
 module.exports = router;
