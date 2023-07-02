@@ -30,7 +30,11 @@ const postSchema=new mongoose.Schema({
         }
     ],
     photo:{
-        type:String
+        data:Buffer,
+        contentType:String
+    },
+    isPhoto:{
+        type:Boolean
     },
     retweets:[
         {

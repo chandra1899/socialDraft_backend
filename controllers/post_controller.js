@@ -10,28 +10,20 @@ const path=require('path');
 module.exports.create=async (req,res)=>{
     try {
         let user=await User.findById(req.user._id)
-        User.uploadedAvatar(req,res,async (err)=>{
-            if(err){
-                console.log('***** multer error',err);
-                console.log(req.file);
-                console.log("error",err);
-               return res.status(500).json({err})
-                
-            }
-            console.log('files===',req.files);
+            const {postPhoto}=req.files
             let post=await Post.create({
-                content:req.body.content,
+                content:req.fields.content,
                 user:req.user._id
             });
             user.posts.push(post)
             if(req.files.postPhoto){
-                post.photo=User.userPostPath+'/'+req.files.postPhoto[0].filename
+                post.photo.data=fs.readFileSync(postPhoto.path);
+                post.photo.contentType=postPhoto.type;
             }
             user.save();
-            post=await post.populate('user')
+            post=post=await post.populate('user')
             post.save();
         return res.status(200).json({post})
-           })
     } catch (error) {
         return res.status(500).json({error:error})
   }
@@ -49,9 +41,9 @@ module.exports.destroy=async (req,res)=>{
             await Comment.deleteMany({post:req.params.id});
             await User.findByIdAndUpdate(post.user._id,{$pull:{posts:req.params.id}});
             await Bookmark.deleteMany({bookmark:req.params.id});
-            if(post.photo){
-                fs.unlinkSync(path.join(__dirname,'..','..',post.photo));
-            }
+            // if(post.photo){
+            //     fs.unlinkSync(path.join(__dirname,'..','..',post.photo));
+            // }
 
                 let retweetedPosts=await Post.find({
                     type:'Retweet',
@@ -160,5 +152,18 @@ module.exports.savedposts=async (req,res)=>{
 
     } catch (err) {
     return res.status(404).json({err})
+    }
+}
+
+module.exports.postPhoto=async (req,res)=>{
+    try {
+        let post=await Post.findById(req.params.id).select('photo');
+        if(post.photo.data){
+            res.set('Content-type',post.photo.contentType)
+            return res.status(200).send(post.photo.data)
+        }
+        
+    } catch (error) {
+        console.log(error);
     }
 }

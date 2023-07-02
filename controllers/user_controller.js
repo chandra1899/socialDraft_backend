@@ -11,27 +11,25 @@ const signUpMail=require('../mailers/signUp');
 module.exports.update=async (req,res)=>{
     try {
     let user=await User.findById(req.user._id);
-    User.uploadedAvatar(req,res,(err)=>{
-     if(err){
-         console.log('***** multer error',err);
-         console.log(req.file);
-         console.log("error",err);
-        return res.status(500).json({err})
+    // User.uploadedAvatar(req,res,(err)=>{
+    //  if(err){
+    //      console.log('***** multer error',err);
+    //      console.log(req.file);
+    //      console.log("error",err);
+    //     return res.status(500).json({err})
          
-     }
+    //  }
      console.log('files===',req.files);
-     user.name=req.body.name
-     user.description=req.body.description
+     user.name=req.fields.name
+     user.description=req.fields.description
      if(req.files.avatar){
-        console.log(user.avatar);
-        if(!user.photoLocal)
-        fs.unlinkSync(path.join(__dirname,'..','..',user.avatar));
-        user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename
+        user.avatar.data=fs.readFileSync(req.files.avatar.path);
+        user.avatar.contentType=req.files.avatar.type;
         user.photoLocal=false;
      }
      user.save();
      return res.status(200).json({user})
-    })
+    // })
     } catch (err) {
         return res.status(500).json({err})
     }    
@@ -40,25 +38,27 @@ module.exports.update=async (req,res)=>{
 module.exports.create=async (req,res)=>{
     try {
             
-                User.uploadedAvatar(req,res,async(err)=>{
-                    if(err){
-                        console.log('***** multer error',err);
-                        console.log(req.file);
-                        console.log("error",err);
-                       return res.status(500).json({err})      
-                    }
-                    if(req.body.password!=req.body.confirm_password){
+                // User.uploadedAvatar(req,res,async(err)=>{
+                //     if(err){
+                //         console.log('***** multer error',err);
+                //         console.log(req.file);
+                //         console.log("error",err);
+                //        return res.status(500).json({err})      
+                //     }
+                console.log(req.fields,req.files);
+                    if(req.fields.password!=req.fields.confirm_password){
                         return res.status(401).json({error:"password and confirm_password does not match"})
                     }
-                    let candidate=await User.findOne({email:req.body.email});
+                    let candidate=await User.findOne({email:req.fields.email});
                     console.log('files===',req.files);
                    if(!candidate){
-                    let user=await User.create(req.body);
-                    if(req.body.latest!=='avatar_1' && req.body.latest!=='avatar_2' && req.body.latest!=='avatar_3'){ 
-                        user.avatar=User.avatarPath+'/'+req.files.avatar[0].filename;
+                    let user=await User.create(req.fields);
+                    if(req.fields.latest!=='avatar_1' && req.fields.latest!=='avatar_2' && req.fields.latest!=='avatar_3'){ 
+                        user.avatar.data=fs.readFileSync(req.files.avatar.path);
+                        user.avatar.contentType=req.files.avatar.type;
                         user.photoLocal=false;
                     }else{
-                        user.avatar=User.avatarPath_a+'/'+req.body.latest+'.png';
+                        user.photoLocal_path='default_avatars/'+req.fields.latest+'.png';
                         user.photoLocal=true;
                     }
                     user.save();
@@ -67,7 +67,7 @@ module.exports.create=async (req,res)=>{
                    }else{
                         res.status(400).json({error:"user already exites"})
                     }
-                   }) 
+                //    }) 
     } catch (err) {
         console.log("error in creating user in database",err);
         return res.status(500).json({error:err}) ;
@@ -183,5 +183,18 @@ module.exports.verifyOtp=async (req,res)=>{
     } catch (error) {
         console.log(error);
        return res.status(500).json({error});
+    }
+}
+
+module.exports.userAvatar=async (req,res)=>{
+    try {
+        let user=await User.findById(req.params.id).select('avatar');
+        if(user.avatar.data){
+            res.set('Content-type',user.avatar.contentType)
+            return res.status(200).send(user.avatar.data)
+        }
+        
+    } catch (error) {
+        console.log(error);
     }
 }

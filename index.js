@@ -29,7 +29,7 @@ app.use(
 app.use(express.urlencoded());
 app.use(cookieParser());
 
-app.use('/photo',express.static(path.join(__dirname,'..')));
+app.use('/photo',express.static(path.join(__dirname,'/assets')));
 
 app.use(session({
     name:process.env.SESSION_NAME,

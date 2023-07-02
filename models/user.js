@@ -41,7 +41,8 @@ const userSchema=new mongoose.Schema({
         type:String
     },
     avatar:{
-        type:String
+        data:Buffer,
+        contentType:String
     },
     retweets:[
         {
@@ -51,6 +52,9 @@ const userSchema=new mongoose.Schema({
     ],
     photoLocal:{
         type:Boolean
+    },
+    photoLocal_path:{
+        type:String
     }
 },{
     timestamps:true
