@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController=require('../../controllers/user_controller')
 const passport=require('passport')
-const formidable=require('express-formidable')
+const formidable=require('formidable')
 
 router.post('/create',formidable(),userController.create)
 router.post('/update',formidable(),passport.checkAuthentication,userController.update);
