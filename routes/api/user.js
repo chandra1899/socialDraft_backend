@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const {create,update,userAvatar,createSession,destroySession,sendOTP,verifyOtp,getuser,userdetails,getReceiver}=require('../../controllers/user_controller')
 const passport=require('passport')
-const formidable=require('formidable')
-router.post('/create',formidable(),create)
 
-router.post('/update',formidable(),passport.checkAuthentication,update);
+router.post('/create',create)
+router.post('/update',passport.checkAuthentication,update);
 router.get('/userAvatar/:id',userAvatar);
 router.post('/create-session',(req,res,next)=>{
     passport.authenticate('local',async (err,user,info)=>{

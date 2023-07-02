@@ -6,25 +6,35 @@ const Like=require('../models/like')
 const Retweet=require('../models/retweet')
 const fs=require('fs');
 const path=require('path');
+const formidable=require('formidable')
 
 module.exports.create=async (req,res)=>{
     try {
+        const form = formidable({});
+
+        form.parse(req, async (err, fields, files) => {
+            if(err){
+                console.log(err);
+                return res.status(500).json(err);
+            }
+            // console.log(fields, files);
         let user=await User.findById(req.user._id)
-            const {postPhoto}=req.files
+            const {postPhoto}=files
             let newpost=await Post.create({
-                content:req.fields.content,
+                content:fields.content,
                 user:req.user._id
             });
             user.posts.push(newpost)
-            if(req.files.postPhoto){
-                newpost.photo.data=fs.readFileSync(postPhoto.path);
-                newpost.photo.contentType=postPhoto.type;
+            if(files.postPhoto){
+                newpost.photo.data=fs.readFileSync(postPhoto.filepath);
+                newpost.photo.contentType=postPhoto.mimetype;
                 newpost.isPhoto=true;
             }
             user.save();
             newpost.save();
             let post=await Post.findById(newpost._id).select("-photo").populate('user')
         return res.status(200).json({post})
+    })
     } catch (error) {
         return res.status(500).json({error:error})
   }

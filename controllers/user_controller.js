@@ -6,30 +6,29 @@ const path=require('path');
 const Otp=require('../models/OTP');
 const nodeMailer=require('../mailers/otp');
 const signUpMail=require('../mailers/signUp');
-
+const formidable=require('formidable')
 
 module.exports.update=async (req,res)=>{
     try {
+        const form = formidable({});
+        form.parse(req, async (err, fields, files) => {
+            if(err){
+                console.log(err);
+                return res.status(500).json(err);
+            }
+            // console.log(fields, files);
     let user=await User.findById(req.user._id);
-    // User.uploadedAvatar(req,res,(err)=>{
-    //  if(err){
-    //      console.log('***** multer error',err);
-    //      console.log(req.file);
-    //      console.log("error",err);
-    //     return res.status(500).json({err})
-         
-    //  }
-     console.log('files===',req.files);
-     user.name=req.fields.name
-     user.description=req.fields.description
-     if(req.files.avatar){
-        user.avatar.data=fs.readFileSync(req.files.avatar.path);
-        user.avatar.contentType=req.files.avatar.type;
+     console.log('files===',files);
+     user.name=fields.name
+     user.description=fields.description
+     if(files.avatar){
+        user.avatar.data=fs.readFileSync(files.avatar.filepath);
+        user.avatar.contentType=files.avatar.mimetype;
         user.photoLocal=false;
      }
      user.save();
      return res.status(200).json({user})
-    // })
+    })
     } catch (err) {
         return res.status(500).json({err})
     }    
@@ -37,28 +36,27 @@ module.exports.update=async (req,res)=>{
 
 module.exports.create=async (req,res)=>{
     try {
-            
-                // User.uploadedAvatar(req,res,async(err)=>{
-                //     if(err){
-                //         console.log('***** multer error',err);
-                //         console.log(req.file);
-                //         console.log("error",err);
-                //        return res.status(500).json({err})      
-                //     }
-                console.log(req.fields,req.files);
-                    if(req.fields.password!=req.fields.confirm_password){
+        const form = formidable({});
+        form.parse(req, async (err, fields, files) => {
+            if(err){
+                console.log(err);
+                return res.status(500).json(err);
+            }
+            // console.log(fields, files);
+        
+                    if(fields.password!=fields.confirm_password){
                         return res.status(401).json({error:"password and confirm_password does not match"})
                     }
-                    let candidate=await User.findOne({email:req.fields.email});
-                    console.log('files===',req.files);
+                    let candidate=await User.findOne({email:fields.email});
+                    console.log('files===',files);
                    if(!candidate){
-                    let user=await User.create(req.fields);
-                    if(req.fields.latest!=='avatar_1' && req.fields.latest!=='avatar_2' && req.fields.latest!=='avatar_3'){ 
-                        user.avatar.data=fs.readFileSync(req.files.avatar.path);
-                        user.avatar.contentType=req.files.avatar.type;
+                    let user=await User.create(fields);
+                    if(fields.latest!=='avatar_1' && fields.latest!=='avatar_2' && fields.latest!=='avatar_3'){ 
+                        user.avatar.data=fs.readFileSync(files.avatar.filepath);
+                        user.avatar.contentType=files.avatar.mimetype;
                         user.photoLocal=false;
                     }else{
-                        user.photoLocal_path='default_avatars/'+req.fields.latest+'.png';
+                        user.photoLocal_path='default_avatars/'+fields.latest+'.png';
                         user.photoLocal=true;
                     }
                     user.save();
@@ -67,7 +65,7 @@ module.exports.create=async (req,res)=>{
                    }else{
                         res.status(400).json({error:"user already exites"})
                     }
-                //    }) 
+                   }) 
     } catch (err) {
         console.log("error in creating user in database",err);
         return res.status(500).json({error:err}) ;
