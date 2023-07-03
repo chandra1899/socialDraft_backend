@@ -62,7 +62,7 @@ const server =app.listen(PORT,(err)=>{
 //socket.io
 const io = socket(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://socialdraft.netlify.app",
     credentials: true,
   },
 });
