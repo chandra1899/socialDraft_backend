@@ -18,7 +18,9 @@ const gStrategy=new googleStrategy({
                     let person=await User.create({
                         name:profile.displayName,
                         email:profile.emails[0].value,
-                        password:crypto.randomBytes(20).toString('hex')
+                        password:crypto.randomBytes(20).toString('hex'),
+                        photoLocal:true,
+                        photoLocal_path:'default_avatars/avatar_1.png'
                     })
                     signUpMail.signUp(person.email)
                     return done(null,person);
