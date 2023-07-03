@@ -11,6 +11,6 @@ router.use('/bookmark',require('./bookmark'))
 router.use('/retweet',require('./retweet'))
 router.use('/chat',require('./message'))
 router.use('/is',require('./is'))
-router.use('/',home)
+router.use('/home',home)
 
 module.exports=router;
