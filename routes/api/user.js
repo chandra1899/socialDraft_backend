@@ -30,7 +30,7 @@ router.get('/getReceiver/:id', getReceiver);
 
 //google
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email'] }));
-router.get('/auth/google/callback',passport.authenticate('google',{successRedirect:'http://localhost:5173/',failureRedirect:'/users/sign-in'}),createSession);
+router.get('/auth/google/callback',passport.authenticate('google',{successRedirect:'https://socialdraft.onrender.com',failureRedirect:'https://socialdraft.onrender.com'}),createSession);
 
 //facebook
 router.get('/auth/facebook',passport.authenticate('facebook',{ scope :'email' }));
