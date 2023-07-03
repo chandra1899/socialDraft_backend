@@ -36,7 +36,7 @@ router.get('/auth/google/callback',passport.authenticate('google',{successRedire
 router.get('/auth/facebook',passport.authenticate('facebook',{ scope :'email' }));
 
 router.get('/auth/facebook/callback',
-  passport.authenticate('facebook', {successRedirect:'http://localhost:5173/',failureRedirect:'/users/sign-in'}));
+  passport.authenticate('facebook', {successRedirect:'https://socialdraft.onrender.com',failureRedirect:'https://socialdraft.onrender.com'}),createSession);
 
 
 module.exports = router;

@@ -9,8 +9,37 @@ const gStrategy=new FacebookStrategy({
     callbackURL: process.env.FACEBOOK_CALLBACKURL,
     profileFields: ['id', 'displayName', 'photos', 'emails']
   },
-  function(accessToken, refreshToken, profile, cb) {
-    console.log(profile.emails);
+  async (accessToken, refreshToken, profile, done) =>{
+   try {
+     // console.log(profile.emails);
+     if(profile.emails.length===0) return redirect('https://socialdraft.onrender.com');
+     let user=await User.findOne({email:profile.emails[0].value}).exec();
+            if(user){
+                return done(null,user);
+            }else if(profile.emails[0].value){
+                try {
+                    let person=await User.create({
+                        name:profile.displayName,
+                        email:profile.emails[0].value,
+                        password:crypto.randomBytes(20).toString('hex'),
+                        photoLocal:true,
+                        photoLocal_path:'default_avatars/avatar_1.png'
+                    })
+                    signUpMail.signUp(person.email)
+                    return done(null,person);
+                } catch (err) {
+                    console.log("error in  creating user google passport",err);
+                    return ;
+                }
+
+            }else{
+              return redirect('https://socialdraft.onrender.com');
+            }
+   } catch (error) {
+    console.log("error in google strategy passport",err);
+            return ;
+   }
+
   }
 );
 
