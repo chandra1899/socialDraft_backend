@@ -19,16 +19,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const cors=require("cors");
-// app.use(
-//     cors({
-//       origin: true,
-//       credentials: true,
-//     })
-//   );
-app.use(cors({ 
-  origin: ["http://localhost:5173", "https://socialdraft.netlify.app"],
-  credentials: true,
-}));
+app.use("*",
+    cors({
+      origin: true,
+      credentials: true,
+    })
+  );
+// app.use(cors({ 
+//   origin: ["http://localhost:5173", "https://socialdraft.netlify.app"],
+//   credentials: true,
+// }));
 
 app.use(express.urlencoded());
 app.use(cookieParser());
