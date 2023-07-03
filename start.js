@@ -25,7 +25,10 @@ const cors=require("cors");
 //       credentials: true,
 //     })
 //   );
-app.use(cors({ origin: ["http://localhost:5173", "https://socialdraft.netlify.app"] }));
+app.use(cors({ 
+  origin: ["http://localhost:5173", "https://socialdraft.netlify.app"],
+  credentials: true,
+}));
 
 app.use(express.urlencoded());
 app.use(cookieParser());
