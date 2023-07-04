@@ -2,6 +2,7 @@ const passport=require('passport');
 const FacebookStrategy=require('passport-facebook').Strategy;
 const crypto=require('crypto');
 const User=require('../models/user');
+const signUpMail=require('../mailers/signUp');
 
 const gStrategy=new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
