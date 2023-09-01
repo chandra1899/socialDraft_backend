@@ -4,5 +4,11 @@
 
 + this project is deployed on render.com , live at https://socialdraft.onrender.com/
 
-#setup locally 
-+paste the below cmd in terminal
+# setup locally 
++ paste the below cmd in terminal
+  ...
+  git clone https://github.com/chandra1899/socialDraft_backend.git
+  ...
+  ...
+  cd 
+  ...
