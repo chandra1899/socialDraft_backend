@@ -6,9 +6,10 @@
 
 # setup locally 
 + paste the below cmd in terminal
+  
   ```
   git clone https://github.com/chandra1899/socialDraft_backend.git
   ```
- ```
-  cd 
-```
+  ```
+  cd socialDraft_backend
+  ```
