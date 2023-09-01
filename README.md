@@ -21,43 +21,42 @@
   cd socialDraft_backend
   ```
 
-  + now you need to change branch
- 
-    ```
-    git checkout deploy
-    ```
++ now you need to change branch
 
-  + To install all dependencies
+  ```
+  git checkout deploy
+  ```
+
++ To install all dependencies
    
-      ```
-      npm install
-      ```
+  ```
+  npm install
+  ```
 
-  + copy all the feilds from environment.txt to .env file (don't have .env file creaate it in the root directory)
++ copy all the feilds from environment.txt to .env file (don't have .env file creaate it in the root directory)
 
-      ```
-      cp .\environment.txt .env
-      ```
-      + Fill the feild in .env file
+  ```
+  cp .\environment.txt .env
+  ```
++ Fill the feild in .env file
 
-      +  GOOGLR_CALLBACKURL should be like
++  GOOGLR_CALLBACKURL should be like
 
-        ```
-        http://localhost:8000/api/user/auth/google/callback
-        ```
-     +  FACEBOOK_CALLBACKURL should be like
-
-        ```
-        http://localhost:8000/api/user/auth/facebook/callback
-        ```
+ ```
+ http://localhost:8000/api/user/auth/google/callback
+ ```
++  FACEBOOK_CALLBACKURL should be like
+  ```
+  http://localhost:8000/api/user/auth/facebook/callback
+  ```
  
-    + now got to routes/api/user.js and on google , facebook callback route replace https://socialdraft.onrender.com/ with http://localhost:8000/ . this is 
-      only if you use goole or facebook for login
++ now got to routes/api/user.js and on google , facebook callback route replace https://socialdraft.onrender.com/ with http://localhost:8000/ . this is 
+  only if you use goole or facebook for login
 
-      + TO start app
++ TO start app
      
-          ```
-          npm start
-          ```
+ ```
+ npm start
+ ```
 
-      + Now app is running on http://localhost:8000/
++ Now app is running on http://localhost:8000/
