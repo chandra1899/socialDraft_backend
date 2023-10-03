@@ -1,4 +1,5 @@
-const mongoose=require('mongoose');
+// const mongoose=require('mongoose');
+import mongoose from 'mongoose'
 
 const retweetSchema=new mongoose.Schema({
     user:{
@@ -15,4 +16,4 @@ const retweetSchema=new mongoose.Schema({
 })
 
 const Retweet=mongoose.model('Retweet',retweetSchema);
-module.exports=Retweet;
+export default Retweet;

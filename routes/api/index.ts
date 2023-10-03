@@ -1,6 +1,6 @@
-const express=require('express');
-const router=express.Router();
-const {home}=require('../../controllers/home_controller')
+import express from 'express'
+const router = express.Router();
+import {home} from '../../controllers/home_controller'
 
 router.use('/user',require('./user'))
 router.use('/post',require('./post'))

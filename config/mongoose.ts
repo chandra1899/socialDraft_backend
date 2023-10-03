@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 //connecting to mongoDB
-mongoose.connect(process.env.MONGOOSE_URL);
+mongoose.connect(process.env.MONGOOSE_URL as string);
 
 const db = mongoose.connection;
 
@@ -12,4 +13,4 @@ db.once('open', function(){
 });
 
 
-module.exports = db;
+export default db;

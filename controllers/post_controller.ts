@@ -46,7 +46,7 @@ module.exports.destroy=async (req,res)=>{
         let comments=await post.comments
         if(post.user.id==req.user._id){
             await Like.deleteMany({likable:post._id,onModel:'Post'});
-            for(comment of comments){
+            for(let comment of comments){
                 await Like.deleteMany({_id:{$in:comment.likes}});
             }
             await Comment.deleteMany({post:req.params.id});
@@ -61,11 +61,11 @@ module.exports.destroy=async (req,res)=>{
                     retweetedRef:req.params.id
                 })
 
-                for(retweetedPost of retweetedPosts){
+                for(let retweetedPost of retweetedPosts){
                     let retweet=await Post.findById(retweetedPost._id).populate('user').populate('comments')
                     let retweetcomments=await retweet.comments
                         await Like.deleteMany({likable:retweet._id,onModel:'Post'});
-                        for(retweetcomment of retweetcomments){
+                        for(let retweetcomment of retweetcomments){
                             await Like.deleteMany({_id:{$in:retweetcomment.likes}});
                         }
                         await Comment.deleteMany({post:retweet._id});

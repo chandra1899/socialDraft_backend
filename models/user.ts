@@ -105,4 +105,4 @@ userSchema.statics.userPostPath=POST_PATH;
 
 const User=mongoose.model('User',userSchema);
 
-module.exports=User;
+export default User;

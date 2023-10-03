@@ -37,7 +37,7 @@ const gStrategy=new FacebookStrategy({
               return redirect('https://socialdraft.onrender.com');
             }
    } catch (error) {
-    console.log("error in google strategy passport",err);
+    console.log("error in google strategy passport",error);
             return ;
    }
 

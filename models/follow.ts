@@ -1,4 +1,5 @@
-const mongoose=require('mongoose');
+// const mongoose=require('mongoose');
+import mongoose from 'mongoose'
 
 const followSchema=new mongoose.Schema({
     user:{
@@ -15,4 +16,4 @@ const followSchema=new mongoose.Schema({
 })
 
 const Follow=mongoose.model('Follow',followSchema);
-module.exports=Follow;
+export default Follow;

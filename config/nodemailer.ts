@@ -1,4 +1,5 @@
-const nodemailer=require('nodemailer');
+// const nodemailer=require('nodemailer');
+import nodemailer from 'nodemailer'
 //creating transporter for mailing
 let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -6,12 +7,12 @@ let transporter = nodemailer.createTransport({
     port: 587,
     secure: false,
     auth: {
-        user: process.env.AUTH_MAILER_EMAIL,
-        pass: process.env.AUTH_MAILER_PASS
+        user: process.env.AUTH_MAILER_EMAIL as string,
+        pass: process.env.AUTH_MAILER_PASS as string
     }
 
   });
 
-  module.exports = {
+  export default {
     transporter: transporter
 }

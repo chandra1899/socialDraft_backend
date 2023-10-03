@@ -1,4 +1,5 @@
-const nodemailer=require('../config/nodemailer');
+// const nodemailer=require('../config/nodemailer');
+import nodemailer from '../config/nodemailer'
 
 module.exports.sendOtp = async(email,otp) => {   
    try {

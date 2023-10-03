@@ -26,7 +26,7 @@ module.exports.toggleRetweet=async (req,res)=>{
         }).populate('user').populate('comments');
         let comments=retweetP.comments;
         await Like.deleteMany({likable:retweetP._id,onModel:'Post'});
-        for(comment of comments){
+        for(let comment of comments){
             await Like.deleteMany({_id:{$in:comment.likes}});
         }
         await Comment.deleteMany({post:retweetP._id});

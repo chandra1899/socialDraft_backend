@@ -1,5 +1,8 @@
-const User=require('../models/user');
-const Bookmark=require('../models/bookmark')
+import User from '../models/user'
+import Bookmark from '../models/bookmark'
+
+// const User=require('../models/user');
+// const Bookmark=require('../models/bookmark')
 
 module.exports.toggleBookmark=async (req,res)=>{
     let user=await User.findById( req.user._id);

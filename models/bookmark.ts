@@ -1,4 +1,5 @@
-const mongoose=require('mongoose');
+// const mongoose=require('mongoose');
+import mongoose from 'mongoose'
 
 const bookmarkSchema=new mongoose.Schema({
     user:{
@@ -15,4 +16,4 @@ const bookmarkSchema=new mongoose.Schema({
 })
 
 const Bookmark=mongoose.model('Bookmark',bookmarkSchema);
-module.exports=Bookmark;
+export default Bookmark;

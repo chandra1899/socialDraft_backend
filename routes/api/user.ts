@@ -1,7 +1,12 @@
-const express = require('express');
+import express from 'express'
 const router = express.Router();
-const {create,update,userAvatar,createSession,destroySession,sendOTP,verifyOtp,getuser,userdetails,getReceiver}=require('../../controllers/user_controller')
-const passport=require('passport')
+import passport from 'passport'
+import {create,update,userAvatar,createSession,destroySession,sendOTP,verifyOtp,getuser,userdetails,getReceiver} from '../../controllers/user_controller'
+
+// const express = require('express');
+// const router = express.Router();
+// const {create,update,userAvatar,createSession,destroySession,sendOTP,verifyOtp,getuser,userdetails,getReceiver}=require('../../controllers/user_controller')
+// const passport=require('passport')
 
 router.post('/create',create)
 router.post('/update',passport.checkAuthentication,update);
