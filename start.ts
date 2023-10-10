@@ -63,7 +63,7 @@ app.use(passport.session());
 
 app.use('/',require('./routes')); 
 
-const server =app.listen(PORT,(err)=>{
+const server =app.listen(PORT,(err:any)=>{
     if(err) console.log("error in running server",err);
     console.log(`Server is successfully running on port: ${PORT}`); 
 })

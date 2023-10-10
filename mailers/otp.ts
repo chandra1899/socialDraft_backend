@@ -1,7 +1,7 @@
 // const nodemailer=require('../config/nodemailer');
 import nodemailer from '../config/nodemailer'
 
-module.exports.sendOtp = async(email,otp) => {   
+const sendOtp = async(email:string,otp:string) => {   
    try {
     let info=await nodemailer.transporter.sendMail({
         from: process.env.AUTH_MAILER_EMAIL,
@@ -16,3 +16,4 @@ module.exports.sendOtp = async(email,otp) => {
    }
     
 }
+export default sendOtp

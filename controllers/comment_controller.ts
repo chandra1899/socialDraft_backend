@@ -1,11 +1,15 @@
-const Comment=require('../models/comment')
-const Post=require('../models/post')
-const Like=require('../models/like')
+import Comment from '../models/comment'
+import Post from '../models/post'
+import Like from '../models/like'
 
-module.exports.create=async (req,res)=>{
+// const Comment=require('../models/comment')
+// const Post=require('../models/post')
+// const Like=require('../models/like')
+
+export const create=async (req:any,res:any)=>{
     try {
      let post=await Post.findById(req.body.post);
-     let comment;
+     let comment:any;
      if(post){
          comment=await Comment.create({
              content:req.body.content,
@@ -23,13 +27,13 @@ module.exports.create=async (req,res)=>{
     }
  }
 
- module.exports.destroy=async (req,res)=>{
+export const destroy=async (req:any,res:any)=>{
     try {
         let comment=await Comment.findById(req.params.id);
-        if(comment.user==req.user.id){
-        let postId=comment.post;
-        await Comment.findByIdAndDelete(comment.id);
-        await Like.deleteMany({likable:comment._id,onModel:'Comment'});
+        if(comment?.user==req.user.id){
+        let postId=comment?.post;
+        await Comment.findByIdAndDelete(comment?.id);
+        await Like.deleteMany({likable:comment?._id,onModel:'Comment'});
         await Post.findByIdAndUpdate(postId,{$pull:{comments:req.params.id}});
         return res.status(200).json({msg:"sucessfully deleted comment"})
     }else{

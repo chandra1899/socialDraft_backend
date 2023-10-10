@@ -1,6 +1,6 @@
 const Messages = require("../models/message");
 
-module.exports.getMessages = async (req, res) => {
+export const getMessages = async (req:any,res:any) => {
   try {
     const { from, to } = req.body;
 
@@ -10,7 +10,7 @@ module.exports.getMessages = async (req, res) => {
       },
     }).sort({ updatedAt: 1 });
 
-    const projectedMessages = messages.map((msg) => {
+    const projectedMessages = messages.map((msg:{sender:string,message:{text:string}}) => {
       return {
         fromSelf: msg.sender.toString() === from,
         message: msg.message.text,
@@ -22,7 +22,7 @@ module.exports.getMessages = async (req, res) => {
   }
 };
 
-module.exports.addMessage = async (req, res) => {
+export const addMessage = async (req:any,res:any) => {
   try {
     const { from, to, message } = req.body;
     const data = await Messages.create({

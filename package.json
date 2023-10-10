@@ -13,6 +13,12 @@
     "node": ">=14.20.1"
   },
   "dependencies": {
+    "@types/formidable": "^3.4.3",
+    "@types/nodemailer": "^6.4.11",
+    "@types/passport": "^1.0.13",
+    "@types/passport-facebook": "^3.0.1",
+    "@types/passport-google-oauth": "^1.0.43",
+    "@types/passport-local": "^1.0.36",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "connect-mongo": "^5.0.0",

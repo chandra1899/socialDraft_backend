@@ -1,7 +1,7 @@
 // const nodemailer=require('../config/nodemailer');
 import nodemailer from '../config/nodemailer'
 
-module.exports.signUp = async(email) => {
+const signUp = async(email:string) => {
    
    try {
     let info=await nodemailer.transporter.sendMail({
@@ -16,3 +16,4 @@ module.exports.signUp = async(email) => {
    }
     
 }
+export default signUp

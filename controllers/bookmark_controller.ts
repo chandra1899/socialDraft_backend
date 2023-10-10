@@ -1,10 +1,11 @@
 import User from '../models/user'
 import Bookmark from '../models/bookmark'
+// import { Request, Response } from 'express';
 
 // const User=require('../models/user');
 // const Bookmark=require('../models/bookmark')
 
-module.exports.toggleBookmark=async (req,res)=>{
+const toggleBookmark=async (req:any,res:any)=>{
     let user=await User.findById( req.user._id);
     let deleted=false;
 
@@ -32,3 +33,4 @@ module.exports.toggleBookmark=async (req,res)=>{
     }
     return ;
 }
+export default toggleBookmark

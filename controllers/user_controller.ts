@@ -1,14 +1,24 @@
-const User=require('../models/user')
-const bcrypt=require('bcrypt')
-const jwt=require('jsonwebtoken')
-const fs=require('fs');
-const path=require('path');
-const Otp=require('../models/OTP');
-const nodeMailer=require('../mailers/otp');
-const signUpMail=require('../mailers/signUp');
-const formidable=require('formidable')
+import User from '../models/user'
+// import bcrypt from 'bcrypt'
+// import jwt from 'jsonwebtoken'
+import fs from 'fs'
+// import path from 'path'
+import Otp from '../models/OTP'
+import nodeMailer from '../mailers/otp'
+import signUpMail from '../mailers/signUp'
+import formidable from 'formidable'
 
-module.exports.update=async (req,res)=>{
+// const User=require('../models/user')
+// const bcrypt=require('bcrypt')
+// const jwt=require('jsonwebtoken')
+// const fs=require('fs');
+// const path=require('path');
+// const Otp=require('../models/OTP');
+// const nodeMailer=require('../mailers/otp');
+// const signUpMail=require('../mailers/signUp');
+// const formidable=require('formidable')
+
+export const update=async (req:any,res:any)=>{
     try {
         const form = formidable({});
         form.parse(req, async (err, fields, files) => {
@@ -34,7 +44,7 @@ module.exports.update=async (req,res)=>{
     }    
 }
 
-module.exports.create=async (req,res)=>{
+export const create=async (req:any,res:any)=>{
     try {
         const form = formidable({});
         form.parse(req, async (err, fields, files) => {
@@ -52,15 +62,15 @@ module.exports.create=async (req,res)=>{
                    if(!candidate){
                     let user=await User.create(fields);
                     if(fields.latest!=='avatar_1' && fields.latest!=='avatar_2' && fields.latest!=='avatar_3'){ 
-                        user.avatar.data=fs.readFileSync(files.avatar.filepath);
-                        user.avatar.contentType=files.avatar.mimetype;
+                        user.avatar.data=fs.readFileSync(files?.avatar?.filepath);
+                        user.avatar.contentType=files?.avatar?.mimetype;
                         user.photoLocal=false;
                     }else{
                         user.photoLocal_path='default_avatars/'+fields.latest+'.png';
                         user.photoLocal=true;
                     }
                     user.save();
-                            signUpMail.signUp(user.email)
+                            signUpMail.signUp(user?.email)
                             return res.status(200).json({msg:"successfully created user"})
                    }else{
                         res.status(400).json({error:"user already exites"})
@@ -72,20 +82,20 @@ module.exports.create=async (req,res)=>{
     }
 }
 
-module.exports.createSession=(req,res)=>{
+export const createSession=(req:any,res:any)=>{
     console.log('sucesfully logged in');
     return res.status(200).json({msg:"sucessfully created session"})
 }
 
-module.exports.destroySession=(req,res)=>{
-    req.logout((err)=>{
+export const destroySession=(req:any,res:any,next:any)=>{
+    req.logout((err:any)=>{
         if(err){
             return next(err);
         }
         return res.status(200).json({msg:"successfully signed out"})
     });
 }
-module.exports.getuser=async (req,res)=>{
+export const getuser=async (req:any,res:any)=>{
     try {
         if(req.user){
             let can=req.user;
@@ -99,7 +109,7 @@ module.exports.getuser=async (req,res)=>{
     }  
 }
 
-module.exports.userdetails=async (req,res)=>{
+export const userdetails=async (req:any,res:any)=>{
     try {
         let user=await User.findById(req.params.id).select("-avatar").populate({
             path:'posts',
@@ -115,7 +125,7 @@ module.exports.userdetails=async (req,res)=>{
     }
 }
 
-module.exports.getReceiver=async (req,res)=>{
+export const getReceiver=async (req:any,res:any)=>{
     try {
         let user=await User.findById(req.params.id).select("-avatar");
             return res.status(200).json({user})
@@ -132,7 +142,7 @@ const generateOtp=()=>{
     return otp
 }
 
-module.exports.sendOTP=async (req,res)=>{
+export const sendOTP=async (req:any,res:any)=>{
     try {
         let email=req.body.email;
         let otp=generateOtp();
@@ -164,7 +174,7 @@ module.exports.sendOTP=async (req,res)=>{
     }
 }
 
-module.exports.verifyOtp=async (req,res)=>{
+export const verifyOtp=async (req:any,res:any)=>{
     try {
         console.log(req.body);
         if(req.body.password!==req.body.confirm_password){
@@ -186,7 +196,7 @@ module.exports.verifyOtp=async (req,res)=>{
     }
 }
 
-module.exports.userAvatar=async (req,res)=>{
+export const userAvatar=async (req:any,res:any)=>{
     try {
         let user=await User.findById(req.params.id).select('avatar');
         if(user.avatar.data){

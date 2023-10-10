@@ -8,6 +8,6 @@ import homeController from '../controllers/home_controller'
 // const passport=require('passport')
 
 router.use('/api',require('./api'));
-router.use('/',homeController.home)
+router.use('/',homeController)
 
 module.exports=router;

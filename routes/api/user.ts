@@ -12,7 +12,7 @@ router.post('/create',create)
 router.post('/update',passport.checkAuthentication,update);
 router.get('/userAvatar/:id',userAvatar);
 router.post('/create-session',(req,res,next)=>{
-    passport.authenticate('local',async (err,user,info)=>{
+    passport.authenticate('local',async (err:any,user:any,info:any)=>{
         if(err){
             return res.status(500).json({err})
         }

@@ -1,6 +1,8 @@
-const Post=require('../models/post')
+import Post from '../models/post'
 
-module.exports.home=async (req,res)=>{
+// const Post=require('../models/post')
+
+const home=async (req:any,res:any)=>{
     try {
     let posts=await Post.find({}).select("-photo")
     .sort('-createdAt')
@@ -25,3 +27,4 @@ module.exports.home=async (req,res)=>{
     }
 
 }
+export default home

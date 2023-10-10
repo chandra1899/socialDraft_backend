@@ -1,13 +1,21 @@
-const Like=require('../models/like')
-const Bookmark=require('../models/bookmark')
-const Post=require('../models/post')
-const Comment=require('../models/comment')
-const Follow=require('../models/follow')
-const User=require('../models/user')
-const Retweet=require('../models/retweet')
+import Like from '../models/like'
+import Bookmark from '../models/bookmark'
+import Post from '../models/post'
+import Comment from '../models/comment'
+import Follow from '../models/follow'
+import User from '../models/user'
+import Retweet from '../models/retweet'
+
+// const Like=require('../models/like')
+// const Bookmark=require('../models/bookmark')
+// const Post=require('../models/post')
+// const Comment=require('../models/comment')
+// const Follow=require('../models/follow')
+// const User=require('../models/user')
+// const Retweet=require('../models/retweet')
 
 
-module.exports.isliked=async (req,res)=>{
+export const isliked=async (req:any,res:any)=>{
     try {
         let likeexist=false;
         let like=await Like.findOne({
@@ -22,10 +30,10 @@ module.exports.isliked=async (req,res)=>{
        if(req.query.type=='Post')
        {
         let post=await Post.findById(req.query.id)
-        likes=post.likes.length
+        likes=post?.likes.length
        }else{
         let comment=await Comment.findById(req.query.id)
-        likes=comment.likes.length
+        likes=comment?.likes.length
        }
         return res.status(200).json({likeexist,likes})
 
@@ -34,7 +42,7 @@ module.exports.isliked=async (req,res)=>{
     }
 }
 
-module.exports.issaved=async (req,res)=>{
+export const issaved=async (req:any,res:any)=>{
     try {
         let bookmarkexist=false;
         let bookmark=await Bookmark.findOne({
@@ -51,7 +59,7 @@ module.exports.issaved=async (req,res)=>{
     }
 }
 
-module.exports.isfollow=async (req,res)=>{
+export const isfollow=async (req:any,res:any)=>{
     try {
         let followexist=false;
         let follow=await Follow.findOne({
@@ -72,7 +80,7 @@ module.exports.isfollow=async (req,res)=>{
     }
 }
 
-module.exports.retweeted=async (req,res)=>{
+export const retweeted=async (req:any,res:any)=>{
     try {
         let retweetexist=false;
         let retweet=await Retweet.findOne({
@@ -83,7 +91,7 @@ module.exports.retweeted=async (req,res)=>{
             retweetexist=true
         }
         let post=await Post.findById(req.query.id)
-        let retweets=post.retweets.length
+        let retweets=post?.retweets.length
         return res.status(200).json({retweetexist,retweets})
     } catch (error) {
         return res.status(404).json({error})

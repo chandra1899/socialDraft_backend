@@ -62,7 +62,7 @@ const userSchema=new mongoose.Schema({
 
 
 // hash password
-userSchema.pre('save',async function(next){
+userSchema.pre('save',async function(next:any){
     if(this.isModified('password')){
         this.password=await bcrypt.hash(this.password,12);
     }
@@ -81,13 +81,13 @@ userSchema.methods.generateAuthToken=async function(){
 }
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: function (req:any, file:any, cb:any) {
         if(file.fieldname=='avatar')
       cb(null, path.join(__dirname,'..','..',AVATAR_PATH))
       else 
       cb(null, path.join(__dirname,'..','..',POST_PATH))
     },
-    filename: function (req, file, cb) {
+    filename: function (req:any, file:any, cb:any) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
       cb(null, file.fieldname + '-' + uniqueSuffix)
     }

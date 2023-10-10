@@ -1,11 +1,18 @@
-const User=require('../models/user');
-const Retweet=require('../models/retweet');
-const Post=require('../models/post');
-const Comment=require('../models/comment');
-const Bookmark=require('../models/bookmark')
-const Like=require('../models/like')
+import User from '../models/user'
+import Retweet from '../models/retweet'
+import Post from '../models/post'
+import Comment from '../models/comment'
+import Bookmark from '../models/bookmark'
+import Like from '../models/like'
 
-module.exports.toggleRetweet=async (req,res)=>{
+// const User=require('../models/user');
+// const Retweet=require('../models/retweet');
+// const Post=require('../models/post');
+// const Comment=require('../models/comment');
+// const Bookmark=require('../models/bookmark')
+// const Like=require('../models/like')
+
+export const toggleRetweet=async (req:any,res:any)=>{
     let user=await User.findById( req.user._id);
     let deleted=false;
     let retweetedpost=await Post.findById(req.query.id);
@@ -24,13 +31,13 @@ module.exports.toggleRetweet=async (req,res)=>{
             user:req.user._id,
             retweetedRef:req.query.id
         }).populate('user').populate('comments');
-        let comments=retweetP.comments;
-        await Like.deleteMany({likable:retweetP._id,onModel:'Post'});
-        for(let comment of comments){
+        let comments=retweetP?.comments;
+        await Like.deleteMany({likable:retweetP?._id,onModel:'Post'});
+        for(let comment of comments as any){
             await Like.deleteMany({_id:{$in:comment.likes}});
         }
-        await Comment.deleteMany({post:retweetP._id});
-        await Bookmark.deleteMany({bookmark:retweetP._id});
+        await Comment.deleteMany({post:retweetP?._id});
+        await Bookmark.deleteMany({bookmark:retweetP?._id});
 
         await Post.findOneAndDelete({
             type:'Retweet',
@@ -39,8 +46,8 @@ module.exports.toggleRetweet=async (req,res)=>{
         })
         user.retweets.pull(existing._id)
         user.save()
-        retweetedpost.retweets.pull(existing._id);
-        retweetedpost.save();
+        retweetedpost?.retweets.pull(existing._id);
+        retweetedpost?.save();
         deleted=true;
         res.status(200).json({deleted})
     }else{
@@ -60,8 +67,8 @@ module.exports.toggleRetweet=async (req,res)=>{
         ])
         user.retweets.push(newRetweet._id)
         user.save();
-        retweetedpost.retweets.push(newRetweet._id)
-        retweetedpost.save();
+        retweetedpost?.retweets.push(newRetweet._id)
+        retweetedpost?.save();
         res.status(200).json({deleted,post})
     }
     return ;

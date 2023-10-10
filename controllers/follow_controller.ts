@@ -1,7 +1,10 @@
-const User=require('../models/user')
-const Follow=require('../models/follow');
+import User from '../models/user'
+import Follow from '../models/follow'
 
-module.exports.togglefollow=async (req,res)=>{
+// const User=require('../models/user')
+// const Follow=require('../models/follow');
+
+export const togglefollow=async (req:any,res:any)=>{
     try {
         let deleted=false;
     let father=await User.findById(req.query.id)
@@ -40,7 +43,7 @@ module.exports.togglefollow=async (req,res)=>{
     }
 }
 
-module.exports.yourfollowing=async (req,res)=>{
+export const yourfollowing=async (req:any,res:any)=>{
     try {
         let user=await User.findById(req.user._id).populate({
             path:'following',

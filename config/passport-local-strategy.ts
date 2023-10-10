@@ -1,7 +1,13 @@
-const passport=require('passport');
-const LocalStrategy=require('passport-local').Strategy;
-const User=require('../models/user');
-const bcrypt=require('bcrypt')
+import passport from 'passport'
+import passport_Local from 'passport-local'
+const LocalStrategy=passport_Local.Strategy;
+import User from  '../models/user'
+import bcrypt from 'bcrypt'
+
+// const passport=require('passport');
+// const LocalStrategy=require('passport-local').Strategy;
+// const User=require('../models/user');
+// const bcrypt=require('bcrypt')
 
 passport.use(new LocalStrategy({
     usernameField:'email',

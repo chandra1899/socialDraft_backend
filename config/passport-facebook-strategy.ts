@@ -1,8 +1,15 @@
-const passport=require('passport');
-const FacebookStrategy=require('passport-facebook').Strategy;
-const crypto=require('crypto');
-const User=require('../models/user');
-const signUpMail=require('../mailers/signUp');
+import passport from 'passport'
+import Facebook from 'passport-facebook'
+const FacebookStrategy=Facebook.Strategy;
+import crypto from 'crypto'
+import User from '../models/user'
+import signUpMail from  '../mailers/signUp'
+
+// const passport=require('passport');
+// const FacebookStrategy=require('passport-facebook').Strategy;
+// const crypto=require('crypto');
+// const User=require('../models/user');
+// const signUpMail=require('../mailers/signUp');
 
 const gStrategy=new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
@@ -10,7 +17,7 @@ const gStrategy=new FacebookStrategy({
     callbackURL: process.env.FACEBOOK_CALLBACKURL,
     profileFields: ['id', 'displayName', 'photos', 'emails']
   },
-  async (accessToken, refreshToken, profile, done) =>{
+  async (accessToken:string, refreshToken:string, profile, done) =>{
    try {
      // console.log(profile.emails);
      if(profile.emails.length===0) return redirect('https://socialdraft.onrender.com');

@@ -1,8 +1,15 @@
-const passport=require('passport');
-const googleStrategy=require('passport-google-oauth').OAuth2Strategy;
-const crypto=require('crypto');
-const User=require('../models/user');
-const signUpMail=require('../mailers/signUp');
+import passport from 'passport'
+import google from 'passport-google-oauth'
+const googleStrategy=google.OAuth2Strategy;
+import crypto from 'crypto'
+import User from '../models/user'
+import signUpMail from  '../mailers/signUp'
+
+// const passport=require('passport');
+// const googleStrategy=require('passport-google-oauth').OAuth2Strategy;
+// const crypto=require('crypto');
+// const User=require('../models/user');
+// const signUpMail=require('../mailers/signUp');
 
 const gStrategy=new googleStrategy({
    clientID:process.env.GOOGLE_CLIENT_ID,

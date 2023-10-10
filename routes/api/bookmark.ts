@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router();
 import passport from 'passport'
-import {toggleBookmark} from '../../controllers/bookmark_controller'
+import toggleBookmark from '../../controllers/bookmark_controller'
 
 // const express = require('express');
 // const router = express.Router();
