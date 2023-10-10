@@ -8,20 +8,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const User = require('../models/user');
-const bcrypt = require('bcrypt');
-passport.use(new LocalStrategy({
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const passport_1 = __importDefault(require("passport"));
+const passport_local_1 = __importDefault(require("passport-local"));
+const LocalStrategy = passport_local_1.default.Strategy;
+const user_1 = __importDefault(require("../models/user"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+// const passport=require('passport');
+// const LocalStrategy=require('passport-local').Strategy;
+// const User=require('../models/user');
+// const bcrypt=require('bcrypt')
+passport_1.default.use(new LocalStrategy({
     usernameField: 'email',
     passReqToCallback: true
 }, (req, email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
     //find a user and estblish identity
     try {
-        let user = yield User.findOne({ email: email });
+        let user = yield user_1.default.findOne({ email: email });
         let match;
         if (user)
-            match = yield bcrypt.compare(password, user.password);
+            match = yield bcrypt_1.default.compare(password, user.password);
         if (!user || !match) {
             console.log('error', 'Invalid Username/Password');
             return done(null, false);
@@ -33,12 +42,12 @@ passport.use(new LocalStrategy({
         return done(error);
     }
 })));
-passport.serializeUser((user, done) => {
+passport_1.default.serializeUser((user, done) => {
     done(null, user.id);
 });
-passport.deserializeUser((id, done) => __awaiter(void 0, void 0, void 0, function* () {
+passport_1.default.deserializeUser((id, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield User.findById(id);
+        let user = yield user_1.default.findById(id);
         return done(null, user);
     }
     catch (error) {
@@ -46,16 +55,16 @@ passport.deserializeUser((id, done) => __awaiter(void 0, void 0, void 0, functio
         return done(error);
     }
 }));
-passport.checkAuthentication = (req, res, next) => {
+passport_1.default.checkAuthentication = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
     return res.status(401).json({ msg: "not authenticated" });
 };
-passport.setAuthenticatedUser = (req, res, next) => {
+passport_1.default.setAuthenticatedUser = (req, res, next) => {
     if (req.isAuthenticated()) {
         res.locals.user = req.user;
     }
     next();
 };
-module.exports = passport;
+module.exports = passport_1.default;

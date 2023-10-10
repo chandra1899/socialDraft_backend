@@ -14,9 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
 const bookmark_1 = __importDefault(require("../models/bookmark"));
+// import { Request, Response } from 'express';
 // const User=require('../models/user');
 // const Bookmark=require('../models/bookmark')
-module.exports.toggleBookmark = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const toggleBookmark = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let user = yield user_1.default.findById(req.user._id);
     let deleted = false;
     let existing = yield bookmark_1.default.findOne({
@@ -44,3 +45,4 @@ module.exports.toggleBookmark = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
     return;
 });
+exports.default = toggleBookmark;

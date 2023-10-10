@@ -8,8 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.addMessage = exports.getMessages = void 0;
 const Messages = require("../models/message");
-module.exports.getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { from, to } = req.body;
         const messages = yield Messages.find({
@@ -29,7 +31,8 @@ module.exports.getMessages = (req, res) => __awaiter(void 0, void 0, void 0, fun
         return res.status(500).json({ error: error });
     }
 });
-module.exports.addMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getMessages = getMessages;
+const addMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { from, to, message } = req.body;
         const data = yield Messages.create({
@@ -50,3 +53,4 @@ module.exports.addMessage = (req, res) => __awaiter(void 0, void 0, void 0, func
         return res.status(500).json({ error: error });
     }
 });
+exports.addMessage = addMessage;

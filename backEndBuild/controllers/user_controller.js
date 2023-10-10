@@ -8,30 +8,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const User = require('../models/user');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
-const Otp = require('../models/OTP');
-const nodeMailer = require('../mailers/otp');
-const signUpMail = require('../mailers/signUp');
-const formidable = require('formidable');
-module.exports.update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userAvatar = exports.verifyOtp = exports.sendOTP = exports.getReceiver = exports.userdetails = exports.getuser = exports.destroySession = exports.createSession = exports.create = exports.update = void 0;
+const user_1 = __importDefault(require("../models/user"));
+// import bcrypt from 'bcrypt'
+// import jwt from 'jsonwebtoken'
+const fs_1 = __importDefault(require("fs"));
+// import path from 'path'
+const OTP_1 = __importDefault(require("../models/OTP"));
+const otp_1 = __importDefault(require("../mailers/otp"));
+const signUp_1 = __importDefault(require("../mailers/signUp"));
+const formidable_1 = __importDefault(require("formidable"));
+// const User=require('../models/user')
+// const bcrypt=require('bcrypt')
+// const jwt=require('jsonwebtoken')
+// const fs=require('fs');
+// const path=require('path');
+// const Otp=require('../models/OTP');
+// const nodeMailer=require('../mailers/otp');
+// const signUpMail=require('../mailers/signUp');
+// const formidable=require('formidable')
+const update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const form = formidable({});
+        const form = (0, formidable_1.default)({});
         form.parse(req, (err, fields, files) => __awaiter(void 0, void 0, void 0, function* () {
             if (err) {
                 console.log(err);
                 return res.status(500).json(err);
             }
             // console.log(fields, files);
-            let user = yield User.findById(req.user._id);
+            let user = yield user_1.default.findById(req.user._id);
             console.log('files===', files);
             user.name = fields.name;
             user.description = fields.description;
             if (files.avatar) {
-                user.avatar.data = fs.readFileSync(files.avatar.filepath);
+                user.avatar.data = fs_1.default.readFileSync(files.avatar.filepath);
                 user.avatar.contentType = files.avatar.mimetype;
                 user.photoLocal = false;
             }
@@ -43,10 +57,12 @@ module.exports.update = (req, res) => __awaiter(void 0, void 0, void 0, function
         return res.status(500).json({ err });
     }
 });
-module.exports.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.update = update;
+const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const form = formidable({});
+        const form = (0, formidable_1.default)({});
         form.parse(req, (err, fields, files) => __awaiter(void 0, void 0, void 0, function* () {
+            var _a, _b;
             if (err) {
                 console.log(err);
                 return res.status(500).json(err);
@@ -55,13 +71,13 @@ module.exports.create = (req, res) => __awaiter(void 0, void 0, void 0, function
             if (fields.password != fields.confirm_password) {
                 return res.status(401).json({ error: "password and confirm_password does not match" });
             }
-            let candidate = yield User.findOne({ email: fields.email });
+            let candidate = yield user_1.default.findOne({ email: fields.email });
             console.log('files===', files);
             if (!candidate) {
-                let user = yield User.create(fields);
+                let user = yield user_1.default.create(fields);
                 if (fields.latest !== 'avatar_1' && fields.latest !== 'avatar_2' && fields.latest !== 'avatar_3') {
-                    user.avatar.data = fs.readFileSync(files.avatar.filepath);
-                    user.avatar.contentType = files.avatar.mimetype;
+                    user.avatar.data = fs_1.default.readFileSync((_a = files === null || files === void 0 ? void 0 : files.avatar) === null || _a === void 0 ? void 0 : _a.filepath);
+                    user.avatar.contentType = (_b = files === null || files === void 0 ? void 0 : files.avatar) === null || _b === void 0 ? void 0 : _b.mimetype;
                     user.photoLocal = false;
                 }
                 else {
@@ -69,7 +85,7 @@ module.exports.create = (req, res) => __awaiter(void 0, void 0, void 0, function
                     user.photoLocal = true;
                 }
                 user.save();
-                signUpMail.signUp(user.email);
+                signUp_1.default.signUp(user === null || user === void 0 ? void 0 : user.email);
                 return res.status(200).json({ msg: "successfully created user" });
             }
             else {
@@ -82,11 +98,13 @@ module.exports.create = (req, res) => __awaiter(void 0, void 0, void 0, function
         return res.status(500).json({ error: err });
     }
 });
-module.exports.createSession = (req, res) => {
+exports.create = create;
+const createSession = (req, res) => {
     console.log('sucesfully logged in');
     return res.status(200).json({ msg: "sucessfully created session" });
 };
-module.exports.destroySession = (req, res) => {
+exports.createSession = createSession;
+const destroySession = (req, res, next) => {
     req.logout((err) => {
         if (err) {
             return next(err);
@@ -94,7 +112,8 @@ module.exports.destroySession = (req, res) => {
         return res.status(200).json({ msg: "successfully signed out" });
     });
 };
-module.exports.getuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.destroySession = destroySession;
+const getuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.user) {
             let can = req.user;
@@ -108,9 +127,10 @@ module.exports.getuser = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(404).json({ msg: "error in getting user", error: err });
     }
 });
-module.exports.userdetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getuser = getuser;
+const userdetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield User.findById(req.params.id).select("-avatar").populate({
+        let user = yield user_1.default.findById(req.params.id).select("-avatar").populate({
             path: 'posts',
             select: '-photo',
             populate: {
@@ -125,15 +145,17 @@ module.exports.userdetails = (req, res) => __awaiter(void 0, void 0, void 0, fun
         return res.status(500).json({ err });
     }
 });
-module.exports.getReceiver = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userdetails = userdetails;
+const getReceiver = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield User.findById(req.params.id).select("-avatar");
+        let user = yield user_1.default.findById(req.params.id).select("-avatar");
         return res.status(200).json({ user });
     }
     catch (err) {
         return res.status(500).json({ err });
     }
 });
+exports.getReceiver = getReceiver;
 const generateOtp = () => {
     let otp = '';
     for (let i = 0; i < 4; i++) {
@@ -141,29 +163,29 @@ const generateOtp = () => {
     }
     return otp;
 };
-module.exports.sendOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const sendOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let email = req.body.email;
         let otp = generateOtp();
-        let OTP = yield Otp.findOne({ email: email });
+        let OTP = yield OTP_1.default.findOne({ email: email });
         if (OTP) {
             if (Date.now() - OTP.setOn > 600000) {
                 OTP.setOn = Date.now();
                 OTP.otp = otp;
                 yield OTP.save();
-                nodeMailer.sendOtp(email, otp);
+                otp_1.default.sendOtp(email, otp);
             }
             else {
-                nodeMailer.sendOtp(email, OTP.otp);
+                otp_1.default.sendOtp(email, OTP.otp);
             }
         }
         else {
-            let newOtp = yield Otp.create({
+            let newOtp = yield OTP_1.default.create({
                 email: email,
                 otp: otp,
                 setOn: Date.now()
             });
-            nodeMailer.sendOtp(newOtp.email, newOtp.otp);
+            otp_1.default.sendOtp(newOtp.email, newOtp.otp);
         }
         return res.status(200).json({ email });
     }
@@ -172,7 +194,8 @@ module.exports.sendOTP = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(500).json({ error });
     }
 });
-module.exports.verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.sendOTP = sendOTP;
+const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.body);
         if (req.body.password !== req.body.confirm_password) {
@@ -180,11 +203,11 @@ module.exports.verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         let email = req.body.email;
         console.log("email====", req.body);
-        let OTP = yield Otp.findOne({ email: email });
+        let OTP = yield OTP_1.default.findOne({ email: email });
         if (OTP.otp !== req.body.otp) {
             return res.status(401).json({ msg: 'otp is not valid' });
         }
-        let user = yield User.findOne({ email: email });
+        let user = yield user_1.default.findOne({ email: email });
         user.password = req.body.password;
         yield user.save();
         return res.status(200).json({ msg: 'sucessfully changed password' });
@@ -194,9 +217,10 @@ module.exports.verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, funct
         return res.status(500).json({ error });
     }
 });
-module.exports.userAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.verifyOtp = verifyOtp;
+const userAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield User.findById(req.params.id).select('avatar');
+        let user = yield user_1.default.findById(req.params.id).select('avatar');
         if (user.avatar.data) {
             res.set('Content-type', user.avatar.contentType);
             return res.status(200).send(user.avatar.data);
@@ -206,3 +230,4 @@ module.exports.userAvatar = (req, res) => __awaiter(void 0, void 0, void 0, func
         console.log(error);
     }
 });
+exports.userAvatar = userAvatar;

@@ -8,10 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const Post = require('../models/post');
-module.exports.home = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const post_1 = __importDefault(require("../models/post"));
+// const Post=require('../models/post')
+const home = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let posts = yield Post.find({}).select("-photo")
+        let posts = yield post_1.default.find({}).select("-photo")
             .sort('-createdAt')
             .populate({
             path: 'user',
@@ -32,3 +37,4 @@ module.exports.home = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(401).json({ msg: "error in sending post", error: err });
     }
 });
+exports.default = home;

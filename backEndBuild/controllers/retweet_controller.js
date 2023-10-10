@@ -8,55 +8,66 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const User = require('../models/user');
-const Retweet = require('../models/retweet');
-const Post = require('../models/post');
-const Comment = require('../models/comment');
-const Bookmark = require('../models/bookmark');
-const Like = require('../models/like');
-module.exports.toggleRetweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let user = yield User.findById(req.user._id);
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toggleRetweet = void 0;
+const user_1 = __importDefault(require("../models/user"));
+const retweet_1 = __importDefault(require("../models/retweet"));
+const post_1 = __importDefault(require("../models/post"));
+const comment_1 = __importDefault(require("../models/comment"));
+const bookmark_1 = __importDefault(require("../models/bookmark"));
+const like_1 = __importDefault(require("../models/like"));
+// const User=require('../models/user');
+// const Retweet=require('../models/retweet');
+// const Post=require('../models/post');
+// const Comment=require('../models/comment');
+// const Bookmark=require('../models/bookmark')
+// const Like=require('../models/like')
+const toggleRetweet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let user = yield user_1.default.findById(req.user._id);
     let deleted = false;
-    let retweetedpost = yield Post.findById(req.query.id);
-    let existing = yield Retweet.findOne({
+    let retweetedpost = yield post_1.default.findById(req.query.id);
+    let existing = yield retweet_1.default.findOne({
         user: req.user._id,
         retweet: req.query.id
     });
     if (existing) {
-        yield Retweet.findOneAndDelete({
+        yield retweet_1.default.findOneAndDelete({
             user: req.user._id,
             retweet: req.query.id
         });
-        let retweetP = yield Post.findOne({
+        let retweetP = yield post_1.default.findOne({
             type: 'Retweet',
             user: req.user._id,
             retweetedRef: req.query.id
         }).populate('user').populate('comments');
-        let comments = retweetP.comments;
-        yield Like.deleteMany({ likable: retweetP._id, onModel: 'Post' });
+        let comments = retweetP === null || retweetP === void 0 ? void 0 : retweetP.comments;
+        yield like_1.default.deleteMany({ likable: retweetP === null || retweetP === void 0 ? void 0 : retweetP._id, onModel: 'Post' });
         for (let comment of comments) {
-            yield Like.deleteMany({ _id: { $in: comment.likes } });
+            yield like_1.default.deleteMany({ _id: { $in: comment.likes } });
         }
-        yield Comment.deleteMany({ post: retweetP._id });
-        yield Bookmark.deleteMany({ bookmark: retweetP._id });
-        yield Post.findOneAndDelete({
+        yield comment_1.default.deleteMany({ post: retweetP === null || retweetP === void 0 ? void 0 : retweetP._id });
+        yield bookmark_1.default.deleteMany({ bookmark: retweetP === null || retweetP === void 0 ? void 0 : retweetP._id });
+        yield post_1.default.findOneAndDelete({
             type: 'Retweet',
             user: req.user._id,
             retweetedRef: req.query.id
         });
         user.retweets.pull(existing._id);
         user.save();
-        retweetedpost.retweets.pull(existing._id);
-        retweetedpost.save();
+        retweetedpost === null || retweetedpost === void 0 ? void 0 : retweetedpost.retweets.pull(existing._id);
+        retweetedpost === null || retweetedpost === void 0 ? void 0 : retweetedpost.save();
         deleted = true;
         res.status(200).json({ deleted });
     }
     else {
-        let newRetweet = yield Retweet.create({
+        let newRetweet = yield retweet_1.default.create({
             user: req.user._id,
             retweet: req.query.id
         });
-        let post = yield Post.create({
+        let post = yield post_1.default.create({
             type: 'Retweet',
             user: req.user._id,
             retweetedRef: req.query.id
@@ -68,9 +79,10 @@ module.exports.toggleRetweet = (req, res) => __awaiter(void 0, void 0, void 0, f
         ]);
         user.retweets.push(newRetweet._id);
         user.save();
-        retweetedpost.retweets.push(newRetweet._id);
-        retweetedpost.save();
+        retweetedpost === null || retweetedpost === void 0 ? void 0 : retweetedpost.retweets.push(newRetweet._id);
+        retweetedpost === null || retweetedpost === void 0 ? void 0 : retweetedpost.save();
         res.status(200).json({ deleted, post });
     }
     return;
 });
+exports.toggleRetweet = toggleRetweet;

@@ -8,14 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const User = require('../models/user');
-const Follow = require('../models/follow');
-module.exports.togglefollow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.yourfollowing = exports.togglefollow = void 0;
+const user_1 = __importDefault(require("../models/user"));
+const follow_1 = __importDefault(require("../models/follow"));
+// const User=require('../models/user')
+// const Follow=require('../models/follow');
+const togglefollow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let deleted = false;
-        let father = yield User.findById(req.query.id);
-        let son = yield User.findById(req.user._id);
-        let existingFollow = yield Follow.findOne({
+        let father = yield user_1.default.findById(req.query.id);
+        let son = yield user_1.default.findById(req.user._id);
+        let existingFollow = yield follow_1.default.findOne({
             user: req.user._id,
             followable: req.query.id
         });
@@ -24,7 +31,7 @@ module.exports.togglefollow = (req, res) => __awaiter(void 0, void 0, void 0, fu
             son.save();
             father.followers.pull(existingFollow._id);
             father.save();
-            yield Follow.findOneAndDelete({
+            yield follow_1.default.findOneAndDelete({
                 user: req.user._id,
                 followable: father._id
             });
@@ -32,7 +39,7 @@ module.exports.togglefollow = (req, res) => __awaiter(void 0, void 0, void 0, fu
             res.status(200).json({ deleted });
         }
         else {
-            let newfollow = yield Follow.create({
+            let newfollow = yield follow_1.default.create({
                 user: req.user._id,
                 followable: father._id
             });
@@ -48,9 +55,10 @@ module.exports.togglefollow = (req, res) => __awaiter(void 0, void 0, void 0, fu
         return res.status(404).json({ error: err });
     }
 });
-module.exports.yourfollowing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.togglefollow = togglefollow;
+const yourfollowing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield User.findById(req.user._id).populate({
+        let user = yield user_1.default.findById(req.user._id).populate({
             path: 'following',
             populate: {
                 path: 'followable'
@@ -63,3 +71,4 @@ module.exports.yourfollowing = (req, res) => __awaiter(void 0, void 0, void 0, f
         return res.status(500).json({ err });
     }
 });
+exports.yourfollowing = yourfollowing;

@@ -11,5 +11,5 @@ const home_controller_1 = __importDefault(require("../controllers/home_controlle
 // const homeController=require('../controllers/home_controller')
 // const passport=require('passport')
 router.use('/api', require('./api'));
-router.use('/', home_controller_1.default.home);
+router.use('/', home_controller_1.default);
 module.exports = router;

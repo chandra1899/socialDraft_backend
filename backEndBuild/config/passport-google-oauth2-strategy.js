@@ -8,31 +8,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const passport = require('passport');
-const googleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const crypto = require('crypto');
-const User = require('../models/user');
-const signUpMail = require('../mailers/signUp');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const passport_1 = __importDefault(require("passport"));
+const passport_google_oauth_1 = __importDefault(require("passport-google-oauth"));
+const googleStrategy = passport_google_oauth_1.default.OAuth2Strategy;
+const crypto_1 = __importDefault(require("crypto"));
+const user_1 = __importDefault(require("../models/user"));
+const signUp_1 = __importDefault(require("../mailers/signUp"));
+// const passport=require('passport');
+// const googleStrategy=require('passport-google-oauth').OAuth2Strategy;
+// const crypto=require('crypto');
+// const User=require('../models/user');
+// const signUpMail=require('../mailers/signUp');
 const gStrategy = new googleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.GOOGLE_CALLBACKURL
 }, (accessToken, refreshToken, profile, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield User.findOne({ email: profile.emails[0].value }).exec();
+        let user = yield user_1.default.findOne({ email: profile.emails[0].value }).exec();
         if (user) {
             return done(null, user);
         }
         else {
             try {
-                let person = yield User.create({
+                let person = yield user_1.default.create({
                     name: profile.displayName,
                     email: profile.emails[0].value,
-                    password: crypto.randomBytes(20).toString('hex'),
+                    password: crypto_1.default.randomBytes(20).toString('hex'),
                     photoLocal: true,
                     photoLocal_path: 'default_avatars/avatar_1.png'
                 });
-                signUpMail.signUp(person.email);
+                signUp_1.default.signUp(person.email);
                 return done(null, person);
             }
             catch (err) {
@@ -46,5 +56,5 @@ const gStrategy = new googleStrategy({
         return;
     }
 }));
-passport.use(gStrategy);
-module.exports = passport;
+passport_1.default.use(gStrategy);
+module.exports = passport_1.default;

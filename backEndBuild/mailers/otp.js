@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // const nodemailer=require('../config/nodemailer');
 const nodemailer_1 = __importDefault(require("../config/nodemailer"));
-module.exports.sendOtp = (email, otp) => __awaiter(void 0, void 0, void 0, function* () {
+const sendOtp = (email, otp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let info = yield nodemailer_1.default.transporter.sendMail({
             from: process.env.AUTH_MAILER_EMAIL,
@@ -29,3 +29,4 @@ module.exports.sendOtp = (email, otp) => __awaiter(void 0, void 0, void 0, funct
         console.log('error in sendind mail', error);
     }
 });
+exports.default = sendOtp;

@@ -8,15 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const Comment = require('../models/comment');
-const Post = require('../models/post');
-const Like = require('../models/like');
-module.exports.create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.destroy = exports.create = void 0;
+const comment_1 = __importDefault(require("../models/comment"));
+const post_1 = __importDefault(require("../models/post"));
+const like_1 = __importDefault(require("../models/like"));
+// const Comment=require('../models/comment')
+// const Post=require('../models/post')
+// const Like=require('../models/like')
+const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let post = yield Post.findById(req.body.post);
+        let post = yield post_1.default.findById(req.body.post);
         let comment;
         if (post) {
-            comment = yield Comment.create({
+            comment = yield comment_1.default.create({
                 content: req.body.content,
                 post: req.body.post,
                 user: req.user._id
@@ -32,14 +40,15 @@ module.exports.create = (req, res) => __awaiter(void 0, void 0, void 0, function
         return res.status(404).json({ error: err });
     }
 });
-module.exports.destroy = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.create = create;
+const destroy = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let comment = yield Comment.findById(req.params.id);
-        if (comment.user == req.user.id) {
-            let postId = comment.post;
-            yield Comment.findByIdAndDelete(comment.id);
-            yield Like.deleteMany({ likable: comment._id, onModel: 'Comment' });
-            yield Post.findByIdAndUpdate(postId, { $pull: { comments: req.params.id } });
+        let comment = yield comment_1.default.findById(req.params.id);
+        if ((comment === null || comment === void 0 ? void 0 : comment.user) == req.user.id) {
+            let postId = comment === null || comment === void 0 ? void 0 : comment.post;
+            yield comment_1.default.findByIdAndDelete(comment === null || comment === void 0 ? void 0 : comment.id);
+            yield like_1.default.deleteMany({ likable: comment === null || comment === void 0 ? void 0 : comment._id, onModel: 'Comment' });
+            yield post_1.default.findByIdAndUpdate(postId, { $pull: { comments: req.params.id } });
             return res.status(200).json({ msg: "sucessfully deleted comment" });
         }
         else {
@@ -51,3 +60,4 @@ module.exports.destroy = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(500).json({ error: err });
     }
 });
+exports.destroy = destroy;
