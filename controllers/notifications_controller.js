@@ -6,7 +6,8 @@ module.exports.getnotifications=async (req,res)=>{
         let user=await User.findById( req.user._id);
         let notifications = await Notification.find({
             toEmail : user.email
-        }).populate({
+        }).sort('-createdAt')
+        .populate({
             path:'Posted',
             select:"-photo"
         }).populate({
@@ -25,6 +26,11 @@ module.exports.getnotifications=async (req,res)=>{
             populate:{
                 path:'retweetedRef',
                 select:"-photo",
+            }
+        }).populate({
+            path:'Commented',
+            populate:{
+                path:'commentId'
             }
         })
 

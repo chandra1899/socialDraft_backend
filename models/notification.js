@@ -1,5 +1,18 @@
 const mongoose=require('mongoose');
 
+const CommentedSchema=new mongoose.Schema({
+    commentId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Comment',
+        required:true
+    },
+    postId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Post',
+        required:true,
+    }
+})
+
 const NotificationSchema=new mongoose.Schema({
     fromEmail:{
         type:String,
@@ -33,6 +46,10 @@ const NotificationSchema=new mongoose.Schema({
     Retweeted:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Post'
+    },
+    Commented:{
+        type : CommentedSchema,
+        required: true
     }
 
 },{

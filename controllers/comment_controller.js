@@ -1,6 +1,9 @@
 const Comment=require('../models/comment')
 const Post=require('../models/post')
 const Like=require('../models/like')
+const Follow=require('../models/follow')
+const Notification=require('../models/notification')
+const User=require('../models/user')
 
 module.exports.create=async (req,res)=>{
     try {
@@ -12,6 +15,24 @@ module.exports.create=async (req,res)=>{
              post:req.body.post,
              user:req.user._id
          });
+
+         let follower = await Follow.find({
+            user:post.user,
+            followable:req.user._id
+         })
+         let toEmailUser=await User.findById(post.user)
+         if(follower && follower?.length !== 0){
+            await Notification.create({
+                fromEmail:req.user.email,
+                toEmail:toEmailUser.email,
+                typeOf:'Commented',
+                Commented:{
+                    commentId:comment._id,
+                    postId:post._id,
+                }
+            })
+         }
+
          comment=await comment.populate('user');
          post.comments.push(comment);
          post.save();
