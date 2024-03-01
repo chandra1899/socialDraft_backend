@@ -4,6 +4,8 @@ const Post=require('../models/post');
 const Comment=require('../models/comment');
 const Bookmark=require('../models/bookmark')
 const Like=require('../models/like')
+const Follow=require('../models/follow')
+const Notification=require('../models/notification')
 
 module.exports.toggleRetweet=async (req,res)=>{
     let user=await User.findById( req.user._id);
@@ -53,6 +55,19 @@ module.exports.toggleRetweet=async (req,res)=>{
             user:req.user._id,
             retweetedRef:req.query.id
         })
+        
+        let followers=await Follow.find({
+            followable:req.user._id
+        }).populate('user')
+        for(let follower of followers){
+            await Notification.create({
+                fromEmail:user.email,
+                toEmail:follower.user.email,
+                typeOf:'Retweeted',
+                Retweeted:post._id
+            })
+        }
+
         post=await post.populate([
             {path:'user'},
             {path:'likes'},

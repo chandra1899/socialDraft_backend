@@ -12,13 +12,17 @@ const NotificationSchema=new mongoose.Schema({
     typeOf:{
         type:String,
         required:true,
-        enum:['LikedPost' ,'LikedComment','Commented', 'Retweeted', 'Messaged', 'Posted']
+        enum:['LikedPost','LikedRetweet' ,'LikedComment','Commented', 'Retweeted', 'Messaged', 'Posted']
     },
     read:{
         type:Boolean,
         default:false
     },
     LikedPost:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Post'
+    },
+    LikedRetweet:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Post'
     },
@@ -29,7 +33,7 @@ const NotificationSchema=new mongoose.Schema({
     Retweeted:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Post'
-    },
+    }
 
 },{
     timestamps:true

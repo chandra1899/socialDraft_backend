@@ -9,7 +9,25 @@ module.exports.getnotifications=async (req,res)=>{
         }).populate({
             path:'Posted',
             select:"-photo"
-        });
+        }).populate({
+            path:'Retweeted',
+            select:"-photo",
+            populate:{
+                path:'retweetedRef',
+                select:"-photo",
+            }
+        }).populate({
+            path:'LikedPost',
+            select:"-photo"
+        }).populate({
+            path:'LikedRetweet',
+            select:"-photo",
+            populate:{
+                path:'retweetedRef',
+                select:"-photo",
+            }
+        })
+
         // console.log(notifications);
         res.status(200).json({notifications})
     } catch (err) {
