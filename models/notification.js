@@ -1,25 +1,36 @@
 const mongoose=require('mongoose');
 
 const NotificationSchema=new mongoose.Schema({
-    from:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
+    fromEmail:{
+        type:String,
         required:true,
     },
-    to:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
+    toEmail:{
+        type:String,
         required:true,
     },
     typeOf:{
         type:String,
         required:true,
-        enum:['Liked','Commented', 'Retweeted', 'Messaged', 'Posted']
+        enum:['LikedPost' ,'LikedComment','Commented', 'Retweeted', 'Messaged', 'Posted']
     },
     read:{
         type:Boolean,
         default:false
-    }
+    },
+    LikedPost:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Post'
+    },
+    Posted:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Post'
+    },
+    Retweeted:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Post'
+    },
+
 },{
     timestamps:true
 })

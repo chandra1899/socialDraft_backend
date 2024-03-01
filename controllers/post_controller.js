@@ -7,6 +7,8 @@ const Retweet=require('../models/retweet')
 const fs=require('fs');
 const path=require('path');
 const formidable=require('formidable')
+const Follow=require('../models/follow');
+const Notification=require('../models/notification');
 
 module.exports.create=async (req,res)=>{
     try {
@@ -24,6 +26,19 @@ module.exports.create=async (req,res)=>{
                 content:fields.content,
                 user:req.user._id
             });
+
+            let followers=await Follow.find({
+                followable:req.user._id
+            }).populate('user')
+            for(let follower of followers){
+                await Notification.create({
+                    fromEmail:user.email,
+                    toEmail:follower.user.email,
+                    typeOf:'Posted',
+                    Posted:newpost._id
+                })
+            }
+
             user.posts.push(newpost)
             if(files.postPhoto){
                 newpost.photo.data=fs.readFileSync(postPhoto.filepath);
