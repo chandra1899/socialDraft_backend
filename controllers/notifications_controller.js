@@ -32,6 +32,16 @@ module.exports.getnotifications=async (req,res)=>{
             populate:{
                 path:'commentId'
             }
+        }).populate({
+            path:'LikedComment',
+            populate:{
+                path:'commentId'
+            }
+        }).populate({
+            path:'Messaged',
+            populate:{
+                path:'messageId'
+            }
         })
 
         // console.log(notifications);

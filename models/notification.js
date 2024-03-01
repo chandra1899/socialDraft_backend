@@ -4,12 +4,23 @@ const CommentedSchema=new mongoose.Schema({
     commentId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Comment',
-        required:true
     },
     postId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Post',
-        required:true,
+    }
+})
+
+const MessagedSchema=new mongoose.Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
+        default:''
+    },
+    messageId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Message',
+        default:''
     }
 })
 
@@ -49,8 +60,13 @@ const NotificationSchema=new mongoose.Schema({
     },
     Commented:{
         type : CommentedSchema,
-        required: true
-    }
+    },
+    LikedComment:{
+        type : CommentedSchema,
+    },
+    Messaged:{
+        type : MessagedSchema,
+    },
 
 },{
     timestamps:true

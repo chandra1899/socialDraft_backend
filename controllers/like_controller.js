@@ -35,11 +35,11 @@ module.exports.toggleLike=async (req,res)=>{
                 onModel:req.query.type
             });
             //Notification
+            let follow = await Follow.find({
+                user:likable.user,
+                followable:req.user._id
+            })
             if(req.query.type=='Post'){
-                let follow = await Follow.find({
-                    user:likable.user,
-                    followable:req.user._id
-                })
                 if(likable.type==='Retweet'){
                     if(follow && follow?.length != 0){
                         // console.log(follow);
@@ -62,6 +62,19 @@ module.exports.toggleLike=async (req,res)=>{
                             LikedPost:likable._id
                         })
                     }
+                }
+            }else{
+                if(follow && follow?.length != 0){
+                    let toEmailUser=await User.findById(likable.user);
+                    await Notification.create({
+                        fromEmail:req.user.email,
+                        toEmail:toEmailUser.email,
+                        typeOf:'LikedComment',
+                        LikedComment:{
+                            commentId:likable._id,
+                            postId:likable.post
+                        }
+                    })
                 }
             }
 
