@@ -33,7 +33,7 @@ module.exports.create=async (req,res)=>{
             for(let follower of followers){
                 await Notification.create({
                     fromEmail:user.email,
-                    toEmail:follower.user.email,
+                    toEmail:follower?.user?.email,
                     typeOf:'Posted',
                     Posted:newpost._id
                 })

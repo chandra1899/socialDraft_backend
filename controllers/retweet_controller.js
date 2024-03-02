@@ -62,7 +62,7 @@ module.exports.toggleRetweet=async (req,res)=>{
         for(let follower of followers){
             await Notification.create({
                 fromEmail:user.email,
-                toEmail:follower.user.email,
+                toEmail:follower?.user?.email,
                 typeOf:'Retweeted',
                 Retweeted:post._id
             })
