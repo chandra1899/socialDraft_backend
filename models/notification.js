@@ -4,10 +4,12 @@ const CommentedSchema=new mongoose.Schema({
     commentId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Comment',
+        default:''
     },
     postId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Post',
+        default:''
     }
 })
 

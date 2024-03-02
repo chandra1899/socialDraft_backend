@@ -189,12 +189,15 @@ module.exports.verifyOtp=async (req,res)=>{
 module.exports.userAvatar=async (req,res)=>{
     try {
         let user=await User.findById(req.params.id).select('avatar');
-        if(user.avatar.data){
+        if (user && user.avatar && user.avatar.data){
             res.set('Content-type',user.avatar.contentType)
             return res.status(200).send(user.avatar.data)
+        }else {
+            return res.status(404).send('Avatar not found');
         }
         
     } catch (error) {
-        console.log(error);
+        console.log('error is in userAvatar ',error);
+        return res.status(500).send('Internal Server Error');
     }
 }
