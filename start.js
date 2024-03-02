@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const cors=require("cors");
+const Notification = require('./models/notification');
 app.use(
     cors({
       origin: true,
@@ -96,6 +97,16 @@ io.of('/chat').on("connection", (socket) => {
     const sendUserSocket = await onlineUsers.get(data.to);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+    }else{
+      await Notification.create({
+        fromEmail:data.fromEmail,
+        toEmail:data.toEmail,
+        typeOf:'Messaged',
+        Messaged:{
+          userId:data.userId,
+          messageId:data.messageId
+        }
+      })
     }
   });
 });
