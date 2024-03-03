@@ -51,3 +51,17 @@ module.exports.getnotifications=async (req,res)=>{
         return res.status(500).json({error:err})
     }
 }
+
+module.exports.destroy=async (req,res)=>{
+    try {
+        if(req.params.id){
+            await Notification.findByIdAndDelete(req.params.id);
+            return res.status(200).json({deleted:true})
+        }else{
+            return res.status(404).json({message:'id not found'});
+        }
+    } catch (err) {
+        console.log("error in deleting notifications",err);
+        return res.status(500).json({error:err})
+    }
+}
