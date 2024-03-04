@@ -25,7 +25,10 @@ module.exports.toggleRetweet=async (req,res)=>{
             type:'Retweet',
             user:req.user._id,
             retweetedRef:req.query.id
-        }).populate('user').populate('comments');
+        }).populate({
+            path:'user',
+            select:'-avatar'
+        }).populate('comments');
         let comments=retweetP.comments;
         await Like.deleteMany({likable:retweetP._id,onModel:'Post'});
         for(comment of comments){
@@ -58,7 +61,10 @@ module.exports.toggleRetweet=async (req,res)=>{
         
         let followers=await Follow.find({
             followable:req.user._id
-        }).populate('user')
+        }).populate({
+            path:'user',
+            select:'-avatar'
+        })
         for(let follower of followers){
             await Notification.create({
                 fromEmail:user.email,
@@ -69,9 +75,9 @@ module.exports.toggleRetweet=async (req,res)=>{
         }
 
         post=await post.populate([
-            {path:'user'},
+            {path:'user',select:'-avatar'},
             {path:'likes'},
-            {path:'retweetedRef',populate:{path:'user'}}
+            {path:'retweetedRef',select:'-photo',populate:{path:'user',select:'-avatar'}}
         ])
         user.retweets.push(newRetweet._id)
         user.save();

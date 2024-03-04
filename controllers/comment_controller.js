@@ -33,7 +33,10 @@ module.exports.create=async (req,res)=>{
             })
          }
 
-         comment=await comment.populate('user');
+         comment=await comment.populate({
+            path:'user',
+            select:'-avatar'
+         });
          post.comments.push(comment);
          post.save();
          res.status(200).json({comment})

@@ -28,7 +28,10 @@ module.exports.create=async (req,res)=>{
 
             let followers=await Follow.find({
                 followable:req.user._id
-            }).populate('user')
+            }).populate({
+                path:'user',
+                select:'-avatar'
+            })
             for(let follower of followers){
                 await Notification.create({
                     fromEmail:user.email,
@@ -134,7 +137,8 @@ module.exports.yourretweets=async (req,res)=>{
             path:'retweet',
             select:"-photo",
             populate:{
-                path:'user'
+                path:'user',
+                select:'-avatar'
             }
         }
     });
@@ -177,12 +181,14 @@ module.exports.savedposts=async (req,res)=>{
         path:'bookmark',
         select:'-photo',
         populate:[{
-            path:'user'
+            path:'user',
+            select:'-avatar'
         },
         {path:'retweetedRef',
         select:'-photo',
         populate:{
-            path:'user'
+            path:'user',
+            select:'-avatar'
         }}
     ]         
     })

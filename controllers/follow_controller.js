@@ -45,7 +45,8 @@ module.exports.yourfollowing=async (req,res)=>{
         let user=await User.findById(req.user._id).populate({
             path:'following',
             populate:{
-                path:'followable'
+                path:'followable',
+                select:'-avatar'
             }})
     let following=await user.following;
     return res.status(200).json({following})
