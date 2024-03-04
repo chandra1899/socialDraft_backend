@@ -109,4 +109,13 @@ io.of('/chat').on("connection", (socket) => {
       })
     }
   });
+  socket.on('disconnect',()=>{
+    console.log('user disconnected', socket.id);
+    global.onlineUsers.forEach((value, key) => {
+      if (value === socket.id) {
+        global.onlineUsers.delete(key);
+        console.log('Deleted user with ID:', key);
+      }
+    });
+  })
 });
