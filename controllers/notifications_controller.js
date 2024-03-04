@@ -3,10 +3,13 @@ const Notification=require('../models/notification');
 
 module.exports.getnotifications=async (req,res)=>{
     try {
+        const { page } = req.query;
+        const pageSize = 10;
+        const skip = (page - 1) * pageSize
         let user=await User.findById( req.user._id);
         let notifications = await Notification.find({
             toEmail : user.email
-        }).sort('-createdAt')
+        }).sort('-createdAt').skip(skip).limit(10)
         .populate({
             path:'Posted',
             select:"-photo"
