@@ -168,8 +168,11 @@ module.exports.getpost=async (req,res)=>{
 
 module.exports.savedposts=async (req,res)=>{
     try {
+        const { page } = req.query;
+        const pageSize = 10;
+        const skip = (page - 1) * pageSize
     let savedposts=await Bookmark.find({user:req.user._id})
-    .sort('-createdAt')
+    .sort('-createdAt').skip(skip).limit(10)
     .populate({
         path:'bookmark',
         select:'-photo',
