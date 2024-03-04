@@ -61,3 +61,23 @@ module.exports.create=async (req,res)=>{
         return res.status(500).json({error:err})
     }
 }
+
+ module.exports.getcomments=async (req,res)=>{
+    try {
+        const { page } = req.query;
+        const pageSize = 10;
+        const skip = (page - 1) * pageSize
+        let comments=await Comment.find({
+            post:req.params.id
+        }).skip(skip).limit(10)
+        .populate({
+            path:'user',
+            select:'-avatar'
+        })
+        return res.status(200).json({comments})
+        
+    } catch (err) {
+        console.log("error in deleting the comment",err);
+        return res.status(500).json({error:err})
+    }
+}

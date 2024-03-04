@@ -148,24 +148,21 @@ module.exports.yourretweets=async (req,res)=>{
 module.exports.getpost=async (req,res)=>{
     try {
         let post=await Post.findById(req.params.id).select("-photo")
-        .populate('user')
         .populate({
-        path:'comments',
-        populate:{
-            path:'user'
-        }})
+            path:'user',
+            select:'-avatar'
+        })
         .populate({
             path:'retweetedRef',
             select:"-photo",
             populate:{
-                path:'user'
+                path:'user',
+                select:'-avatar'
             }
         })
     return res.status(200).json({post})
-
     } catch (err) {
-    return res.status(404).json({err})
-        
+        return res.status(404).json({err})   
     }
 }
 
