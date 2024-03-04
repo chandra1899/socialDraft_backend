@@ -19,7 +19,6 @@ module.exports.create=async (req,res)=>{
                 console.log(err);
                 return res.status(500).json(err);
             }
-            // console.log(fields, files);
         let user=await User.findById(req.user._id)
             const {postPhoto}=files
             let newpost=await Post.create({
@@ -47,7 +46,13 @@ module.exports.create=async (req,res)=>{
             }
             user.save();
             newpost.save();
-            let post=await Post.findById(newpost._id).select("-photo").populate('user')
+            let post=await Post.findById(newpost._id)
+            .select("-photo")
+            .populate({
+                path:'user',
+                select:'-avatar'
+            })
+            if(files.postPhoto) post.isPhoto = true;
         return res.status(200).json({post})
     })
     } catch (error) {
